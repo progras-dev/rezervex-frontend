@@ -1,18 +1,5 @@
 <template>
   <div>
-
-    <!--<div class="col-md-12 mb-r">
-      <div class="md-form">
-        <md-field>
-          <i class="fa fa-map-marker prefix" :class="{'active': type === 'edit'}"></i>
-          <GmapAutocomplete v-if="propertyData" class="form-control borderBottom" @place_changed="setPlace" placeholder="" v-model="propertyData.address"> </GmapAutocomplete>
-          <GmapAutocomplete v-if="!propertyData" class="form-control borderBottom" @place_changed="setPlace" placeholder="" v-model="address"> </GmapAutocomplete>
-          <label class="active"><span v-lang.address></span></label>
-        </md-field>
-      </div>
-    </div>-->
-
-
     <div class="form-group">
       <label><span v-lang.address></span></label>
       <div class="input-group">
@@ -50,46 +37,11 @@
         v-if="this.place"
         label="★"
         :position="{
-              lat: this.place.geometry.location.lat(),
-              lng: this.place.geometry.location.lng(),
-            }"
+          lat: this.place.geometry.location.lat(),
+          lng: this.place.geometry.location.lng(),
+        }"
       />
     </GmapMap>
-
-    <!--<div class="col-md-12 mb-r">
-      <div class="md-form">
-        &lt;!&ndash;<i class="fa fa-map prefix" :class="{'active': type === 'edit'}"></i>&ndash;&gt;
-        <i class="fa fa-map prefix"></i>
-        <div>
-          <span> <span v-lang.latitude></span>: {{ lat }}</span>
-          <span> <span v-lang.longitude></span>: {{ lng }}</span>
-        </div>
-        <p style="margin-left:49px; margin-top: 10px;"><small> <span v-lang.markerRightClickInfo></span> </small></p>
-
-        <GmapMap style="height: 300px; margin-left:49px;" :zoom="zoomLevel" :center="mapCenter" @rightclick="mapClick">
-          <GmapMarker v-for="(marker, index) in markers"
-                      :key="index"
-                      :position="marker.position"
-          />
-          <GmapMarker
-            v-if="this.place"
-            label="★"
-            :position="{
-              lat: this.place.geometry.location.lat(),
-              lng: this.place.geometry.location.lng(),
-            }"
-          />
-        </GmapMap>
-
-      </div>
-    </div>
--->
-
-
-
-
-
-
   </div>
 </template>
 
@@ -133,11 +85,8 @@
           draggable: true,
           animation: google.maps.Animation.DROP
         })
-
-        // console.log('markers', this.markers)
       }
     },
-
     methods: {
       mapClick(event) {
         this.lat = event.latLng.lat()
@@ -145,9 +94,7 @@
         this.mapCenter.lat = this.lat
         this.mapCenter.lng = this.lng
         this.zoomLevel = 16
-
         this.$emit('mapRightClick', [event.latLng.lat(), event.latLng.lng()])
-
         this.markers = []
         this.markers.push({
           position: {
@@ -157,66 +104,26 @@
           draggable: true,
           animation: google.maps.Animation.DROP
         })
-
-        // GEOCODE
-        /* this.$http.post('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + event.latLng.lat() + ',' + event.latLng.lng() + '&key=AIzaSyDlYPmmGrL52t7ecUgE_HXrnqwaJcqHGpo', {
-          headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With'
-          }
-        })
-          .then(response => {
-            // console.log('success response from property_image_add')
-            // console.log(response.body)
-            this.address = response.body.results[0].formatted_address
-            this.markers = []
-
-            this.lat = event.latLng.lat()
-            this.lng = event.latLng.lng()
-
-            this.mapCenter.lat = this.lat
-            this.mapCenter.lng = this.lng
-            this.zoomLevel = 16
-
-            this.$emit('mapRightClick', [this.address, event.latLng.lat(), event.latLng.lng()])
-
-            this.markers.push({
-              position: {
-                lat: this.lat,
-                lng: this.lng,
-              },
-              draggable: true,
-            })
-          }, response => {
-            console.warn('error from property_image_add')
-            console.log(response)
-          }) */
       },
       setDescription(description) {
         this.description = description
       },
       setPlace(place) {
         this.place = {...place}
-
         if (this.place) {
           this.markers = []
-
           this.lat = this.place.geometry.location.lat()
           this.lng = this.place.geometry.location.lng()
           this.mapCenter.lat = this.lat
           this.mapCenter.lng = this.lng
           this.zoomLevel = 16
-
           this.$emit('setPropertyAddress', [this.place, this.lat, this.lng])
-
           this.markers.push({
             position: {
               lat: this.lat,
               lng: this.lng,
             }
           })
-
           this.place = null
         }
       },
