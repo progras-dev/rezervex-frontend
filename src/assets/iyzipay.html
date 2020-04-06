@@ -1,0 +1,78 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Test</title>
+
+  <!-- <div id="ucs-cards"></div> -->
+
+  <div id = "iyzipay-checkout-form" class = "responsive"> </div>
+
+</head>
+
+<body>
+  <script type="text/javascript">
+    if (typeof iyziInit == 'undefined') {
+      var iyziInit = { 
+        currency:"TRY",
+        token:"211ebb84-6520-4588-b69d-5ae6d2da84e8",
+        price:19.00,
+        locale:"tr",
+        baseUrl:"https://sandbox-api.iyzipay.com", 
+        merchantGatewayBaseUrl:"https://sandbox-merchantgw.iyzipay.com", 
+        registerCardEnabled:false,
+        bkmEnabled:false,
+        bankTransferEnabled:false,
+        bankTransferRedirectUrl:"",
+        bankTransferCustomUIProps:{},
+        creditCardEnabled:true,
+        bankTransferAccounts:[],
+        userCards:[],
+        fundEnabled:false,
+        memberCheckoutOtpData:{},
+        force3Ds:false,
+        isSandbox:true,
+        storeNewCardEnabled:true,
+        paymentWithNewCardEnabled:true,
+        enabledApmTypes:[],
+        payWithIyzicoUsed:false,
+        payWithIyzicoEnabled:false,
+        buyerName:"Johnny",
+        buyerSurname:"Fittizio",
+        merchantInfo:"",
+        buyerProtectionEnabled:false,
+        hide3DS:true,
+        gsmNumber:"+905555555555",
+        email:"brutticavalli@gmail.com",
+        checkConsumerDetail:{},
+        subscriptionPaymentEnabled:true,
+        ucsEnabled:false,
+        metadata : {"debitCardAllowed":"false"},
+        createTag: function(){
+          var iyziJSTag = document.createElement('script');
+          iyziJSTag.setAttribute('src','https://sandbox-static.iyzipay.com/checkoutform/v2/bundle.js?v=1580214019114');
+          document.head.appendChild(iyziJSTag);
+        }
+      };
+      
+      iyziInit.createTag();
+      console.log({iyziJSTag});
+    }
+    </script>
+
+    <script type="text/javascript">
+      if (typeof iyziSubscriptionInit == 'undefined') {
+        var iyziSubscriptionInit = {
+          "daysOfTrialPeriod":"0",
+          "intervalCount":"1",
+          "subscriptionState":"START_WITH_PAY",
+          "interval":"MONTHLY",
+          "pricingPlanPrice":"19.00"
+        }
+        console.log({iyziSubscriptionInit});
+      }
+  </script>
+</body>
+</html>

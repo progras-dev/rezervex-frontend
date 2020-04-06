@@ -1,0 +1,624 @@
+
+/* OVERRIDE HTML TAG */
+
+textarea {
+  height: 5rem!important;
+}
+
+label {
+  color: #666!important;
+  font-weight: 300!important;
+  font-size: 0.95rem!important;
+}
+
+small {
+  font-weight: 300!important;
+}
+
+body {
+  color: #666!important
+}
+
+
+
+/* COLORS */
+
+.white {
+  color: white!important;
+}
+
+.crimson {
+  color: crimson!important;
+}
+
+.mediumGray {
+  color: #666;
+}
+
+.iconColor {
+  color: #555;
+}
+
+.iconColorLight {
+  color: #999!important;
+}
+
+
+
+/* MARGINS */
+
+.mt3 {
+  margin-top: 3px;
+}
+
+.mt10 {
+  margin-top: 10px !important;
+}
+
+.mt20 {
+  margin-top: 20px !important;
+}
+
+.mt25 {
+  margin-top: 25px !important;
+}
+
+.mt50 {
+  margin-top: 50px !important;
+}
+
+.mr5 {
+  margin-right:5px!important;
+}
+
+.mb5 {
+  margin-bottom:5px!important;
+}
+
+.mb10 {
+  margin-bottom:10px!important;
+}
+
+.mb25 {
+  margin-bottom:25px!important;
+}
+
+.mb30 {
+  margin-bottom:30px!important;
+}
+
+.cardMT {
+  margin-top: 25px;
+}
+
+.pl7 {
+  padding-left:7px;
+}
+
+.pt7 {
+  padding-top:7px;
+}
+
+
+/* MODYFING THEME CLASSES */
+
+/* Remove udnerline from links in header and menu */
+a:not(.md-button):hover {
+  text-decoration: none!important;
+}
+
+/*VueMaterial select box make white*/
+.md-menu-content-container {
+  background: white!important;
+  overflow-y: scroll!important;
+}
+
+/*Making the VueMaterial select box bigger*/
+.md-menu-content {
+  max-width: 540px!important;
+  max-height: 300px!important;
+  overflow-y: scroll!important;
+}
+
+
+.invalid-feedback {
+  display: block!important;
+}
+
+.alert .close span {
+  display: none!important;
+}
+
+
+/* Ovverride v-select style */
+ .v-select .dropdown-toggle {
+   border: 1px solid #e1e6ef!important;
+ }
+
+ .v-select .dropdown-toggle:after {
+  content: none !important;
+}
+
+
+
+
+/* TOAST */
+
+.toastText {
+  font-size: 1rem!important;
+  font-weight: 400!important;
+  padding-top: 14px!important;
+  padding-bottom: 14px!important;
+  border-radius: 8px!important;
+}
+
+.toastText i {
+  font-size: 1.3rem!important;
+}
+
+.toastContainer {
+  top: 6%!important;
+  right: 5%!important;
+}
+
+
+
+
+
+/* PAGE TITLES AND TEXTS */
+
+.pageTitleRowInCard {
+  margin-bottom: 4rem;
+  height: auto;
+  width: 100%;
+}
+
+.pageTitleNoMargin {
+  margin-bottom: 2rem;
+  height: auto;
+  width: 100%;
+}
+
+.pageTitleRow {
+  margin-bottom: 1rem;
+  margin-top:2rem;
+  height: auto;
+  width: 100%;
+}
+
+.propertiesSetupPages {
+  background: #36D1DC;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #5B86E5, #36D1DC);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #5B86E595, #36D1DC95); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.usersPages {
+  background: #E55D87;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #5FC3E4, #E55D87);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #5FC3E4, #E55D87); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.bookingPages {
+  background: #11998e;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #38ef7d, #11998e);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #38ef7d99, #11998e99); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.otherPages {
+  background: #FF5F6D;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #FFC371, #FF5F6D);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #FFC371, #FF5F6D); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  /*background: #f2709c;  !* fallback for old browsers *!
+  background: -webkit-linear-gradient(to left, #ff9472, #f2709c);  !* Chrome 10-25, Safari 5.1-6 *!
+  background: linear-gradient(to left, #ff9472, #f2709c); !* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ *!*/
+}
+
+.settingsPages {
+  background: #24C6DC;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #514A9D, #24C6DC);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #514A9D95, #24C6DC95); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.pageTitleContainer {
+  padding-top: 16px;
+  padding-bottom: 16px;
+  text-align: center;
+}
+
+.pageTitle {
+  padding-top: 16px;
+  font-weight: 300;
+  font-size: 3rem;
+}
+
+.pageSubtitle {
+  font-size: 0.95rem;
+  padding-left: 20px;
+  padding-right: 20px;
+  margin-top: 4px;
+}
+
+.fontWeight300 {
+  font-weight: 300!important;
+  color: #333;
+}
+
+.normalText200 {
+  font-size: 1.3rem;
+  line-height: 1.7rem;
+  font-weight: 200;
+}
+
+.normalText300 {
+  font-size: 1.3rem;
+  font-weight: 300;
+}
+
+.smallText200 {
+  font-size: 1.3rem;
+  font-weight: 200;
+}
+
+.pageViewTitle {
+  font-weight: 500;
+  font-size: 1.6rem;
+}
+
+.infoText {
+  display: block;
+  clear: left;
+  font-weight: 300;
+  font-size: 0.8rem;
+  color: #777;
+}
+
+.redText {
+  color: crimson;
+  font-size: 1.1rem;
+}
+
+
+
+/* HEADER */
+
+.menuItem:hover {
+  text-decoration: none!important;
+}
+
+.notificationContainer {
+  margin-top:5px;
+}
+
+.pageHeaderImage {
+  max-width: 100%;
+  height: auto;
+}
+
+
+@media (max-width: 1137px) {
+  .pageHeaderImage {
+    height: 140px!important;
+  }
+}
+
+
+
+/* TABLES */
+
+.tableText {
+
+  font-size: 1.3rem;
+  color: #555;
+}
+
+th.imageColumn {
+  min-width: 120px!important;
+}
+
+th.usersTable, th.propertiesTable {
+  font-size: 14px;
+  color: rgb(62,81,91);
+}
+
+td.usersTable, td.propertiesTable {
+  color: rgb(62,81,91);
+  font-weight: 300;
+  font-size: 1rem;
+}
+
+
+
+
+
+/* FORM */
+
+.invalidBorder {
+  border-bottom: 1px solid #FF1744!important;
+}
+
+
+.lightBorders {
+
+  border-top: 1px solid #9994;
+  border-bottom: 1px solid #9994;
+  border-right: 1px solid #9994;
+}
+
+.lightBordersFull {
+  border-top: 1px solid #9994!important;
+  border-bottom: 1px solid #9994!important;
+  border-right: 1px solid #9994!important;
+  border-left: 1px solid #9994!important;
+}
+
+.errorContainer {
+  margin-top: -34px;
+  margin-left: 44px;
+}
+
+.is-invalid {
+  border-bottom: 1px solid crimson!important;
+  color: crimson;
+}
+
+
+.lineThrough {
+  text-decoration: line-through!important;
+}
+
+.noItems {
+  margin-top: 45px!important;
+  margin-bottom: 45px!important;
+  text-align: center;
+}
+
+.noItemsShorter {
+  margin-top: 25px!important;
+  margin-bottom: 25px!important;
+  text-align: center;
+  color: #666;
+}
+
+.formSubtitle {
+  font-size: 0.95rem;
+  margin-top:25px;
+  display: block;
+  clear: both;
+  font-weight: 300!important;
+  color: #666;
+  /*color: rgb(102, 102, 102)!important;*/
+}
+
+.iconInput {
+  font-size: 1.1rem!important;
+  margin-right: 5px;
+  color: #666;
+}
+
+
+
+
+/* DASHBOARD */
+
+.labelContainer {
+  margin: 0 auto;
+  width: 220px;
+}
+#rectangle {
+  width: 40px;
+  height: 12px;
+  background: #F87979;
+  float: left;
+  margin-top: 5px;
+  margin-right: 9px;
+}
+.labelText {
+  color: #666;
+}
+
+.tableTabTitle {
+  font-size:1.5rem;
+  font-weight: 300;
+}
+
+.tableSubtitle {
+  display: block;
+  font-size: 14px;
+  font-weight: 300;
+  color: #777;
+}
+
+
+
+/* CUSTOM CLASSES */
+
+.buttonIcon {
+  font-size: 13px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.iconSpinner {
+  margin-right: 5px;
+  margin-top: -6px;
+}
+
+.iconSpinnerSuccess {
+  color: #79C447;
+}
+
+.pageTitle i {
+  margin-right: 5px;
+}
+
+.buttonMain i {
+  margin-right: 5px;
+}
+
+.actionButton {
+  transition: all .6s;
+  margin-top: 3px;
+  margin-right: 5px;
+}
+
+.actionButton i {
+  opacity: 0.9;
+}
+
+.buttonMain {
+  min-width: 200px;
+  margin-right: 10px;
+}
+
+
+.pageTitleService {
+  margin-bottom:3rem;
+}
+
+
+.customLabel {
+  margin-left: 30px!important;
+}
+
+.customIcon {
+  margin-top:40px;
+}
+
+.customDropzone {
+  width: 100%;
+}
+
+.fieldSubtitle {
+  font-size: 1.3rem;
+  /*color: #333;*/
+}
+
+.greenLabel {
+  font-size: 1.37rem;
+  font-weight: 400;
+  line-height: 1.2;
+  display: block;
+}
+
+.confirmationMessage {
+  text-align: center;
+}
+
+.coordinate {
+  padding-top: 9px;
+}
+
+.jumbotronCustom {
+  padding-top: 0.5rem!important;
+  padding-bottom: 0.5rem!important;
+  margin-bottom: 0.5rem!important;
+  background-color: #edf1f7!important;
+  color: #7a7a7a!important;
+}
+
+.alert-icon {
+  margin-right: 0.5rem;
+}
+
+
+
+/*RESPONSIVE*/
+
+/*Box right of the calendar*/
+@media (max-width: 800px) {
+  .calendarPadding {
+    padding-left: 40px!important;
+  }
+}
+
+@media (min-width: 801px) and (max-width: 991px) {
+  .calendarPadding {
+    padding-left: 30px!important;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1037px) {
+  .calendarPadding {
+    padding-left: 50px!important;
+  }
+}
+
+@media (min-width: 1038px) and (max-width: 1200px) {
+  .calendarPadding {
+    padding-left: 30px!important;
+  }
+}
+
+@media (min-width: 1201px) and (max-width: 1250px) {
+  .calendarPadding {
+    padding-left: 50px!important;
+  }
+}
+
+@media (min-width: 1251px) {
+  .calendarPadding {
+    padding-left: 20px!important;
+  }
+}
+
+
+
+.inputWidthResponsive {
+  width: 90%;
+}
+
+
+/* Tablet View */
+
+@media (max-width: 670px) {
+  .pageTitle {
+    font-size: 2.9rem!important;
+  }
+
+  .inputWidthResponsive {
+    width: 85%;
+  }
+}
+
+
+
+/* Phone View */
+
+@media (max-width: 520px) {
+  .pageTitle {
+    font-size: 2.5rem!important;
+  }
+
+  .pageSubtitle {
+    font-size: 0.85rem;
+  }
+
+  .inputWidthResponsive {
+    width: 80%;
+  }
+}
+
+
+/* Small phone View */
+
+@media (max-width: 403px) {
+  .pageTitle {
+    font-size: 2rem!important;
+  }
+}
+
+
+@media (max-width: 379px) {
+
+  .inputWidthResponsive {
+    width: 70%;
+  }
+}
+
+
+/* month picker */
+.vue-monthly-picker .input {
+  border: 1px solid #e1e6ef !important;
+  height: calc(2.0625rem + 2px);
+  box-shadow: none !important;
+}
