@@ -1,14 +1,12 @@
 <template>
   <div class="sidebar">
-    <SidebarHeader/>
-    <SidebarForm/>
     <nav class="sidebar-nav">
       <div slot="header"></div>
       <ul class="nav">
         <li class="nav-title text-center">
           <span v-lang.general></span>
         </li>
-        <template v-for="(item, index) in navItems">
+        <span v-for="(item, index) in navItems" :key="index">
           <li class="nav-title text-center" v-if="(item.order === 2 && role === 'admin') || (item.order === 1 && role === 'manager')">
             <span v-lang.propertiesSetup></span>
           </li>
@@ -31,11 +29,11 @@
             <template v-if="item.children">
               <!-- First level dropdown -->
               <SidebarNavDropdown :name="item.name" :url="item.url" :icon="item.icon">
-                <template v-for="(childL1, index) in item.children">
+                <span v-for="(childL1, index1) in item.children" :key="index1">
                   <template v-if="childL1.children">
                     <!-- Second level dropdown -->
                     <SidebarNavDropdown :name="childL1.name" :url="childL1.url" :icon="childL1.icon">
-                      <li class="nav-item" v-for="(childL2, index) in childL1.children">
+                      <li class="nav-item" v-for="(childL2, index2) in childL1.children" :key="index2">
                         <SidebarNavLink :name="childL2.name" :url="childL2.url" :icon="childL2.icon" :badge="childL2.badge" :variant="item.variant"/>
                       </li>
                     </SidebarNavDropdown>
@@ -45,7 +43,7 @@
                       <SidebarNavLink :name="childL1.name" :url="childL1.url" :icon="childL1.icon" :badge="childL1.badge" :variant="item.variant"/>
                     </SidebarNavItem>
                   </template>
-                </template>
+                </span>
               </SidebarNavDropdown>
             </template>
             <template v-else>
@@ -55,18 +53,14 @@
               </SidebarNavItem>
             </template>
           </template>
-        </template>
+        </span>
       </ul>
       <slot></slot>
     </nav>
-    <SidebarFooter/>
     <SidebarMinimizer/>
   </div>
 </template>
 <script>
-import SidebarFooter from './SidebarFooter'
-import SidebarForm from './SidebarForm'
-import SidebarHeader from './SidebarHeader'
 import SidebarMinimizer from './SidebarMinimizer'
 import SidebarNavDivider from './SidebarNavDivider'
 import SidebarNavDropdown from './SidebarNavDropdown'
@@ -88,9 +82,6 @@ export default {
     }
   },
   components: {
-    SidebarFooter,
-    SidebarForm,
-    SidebarHeader,
     SidebarMinimizer,
     SidebarNavDivider,
     SidebarNavDropdown,

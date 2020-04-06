@@ -14,15 +14,15 @@
         <span class="datepicker-preBtn fa fa-chevron-left" aria-hidden="true" @click="preNextMonthClick(0)"></span>
         <span class="datepicker-nextBtn fa fa-chevron-right" aria-hidden="true" @click="preNextMonthClick(1)"></span>
       </div>
-      <template v-for="(p, pan) in pane" >
+      <span v-for="(p, pan) in pane" :key="p + 'pan'">
         <div class="datepicker-inner">
           <div class="datepicker-body">
             <p @click="switchMonthView">{{stringifyDayHeader(currDate, pan)}}</p>
             <div class="datepicker-weekRange">
-              <span v-for="w in text.daysOfWeek">{{w}}</span>
+              <span v-for="(w, index) in text.daysOfWeek" :key="index + 'week'">{{w}}</span>
             </div>
             <div class="datepicker-dateRange">
-              <span v-for="d in dateRange[pan]" class="day-cell" :class="getItemClasses(d)" :data-date="stringify(d.date)" @click="daySelect(d.date, $event)"><div>
+              <span v-for="d in dateRange[pan]" :key="d.date + 'date'" class="day-cell" :class="getItemClasses(d)" :data-date="stringify(d.date)" @click="daySelect(d.date, $event)"><div>
                 <template v-if="d.sclass !== 'datepicker-item-gray'">
                   {{getSpecailDay(d.date) || d.text}}
                 </template>
@@ -34,50 +34,50 @@
             </div>
           </div>
         </div>
-      </template>
+      </span>
     </div>
     <div class="datepicker-popup" :style="paneStyle" v-show="displayMonthView">
       <div class="datepicker-ctrl">
         <span class="datepicker-preBtn fa fa-chevron-left" aria-hidden="true" @click="preNextYearClick(0)"></span>
         <span class="datepicker-nextBtn fa fa-chevron-right" aria-hidden="true" @click="preNextYearClick(1)"></span>
       </div>
-      <template v-for="(p, pan) in pane" >
+      <span v-for="(p, pan) in pane" :key="p + 'pan2'">
         <div class="datepicker-inner">
           <div class="datepicker-body">
             <p @click="switchDecadeView">{{stringifyYearHeader(currDate, pan)}}</p>
             <div class="datepicker-monthRange">
-              <template v-for="(m, $index) in text.months">
+              <span v-for="(m, $index) in text.months" :key="$index + 'month'">
                 <span :class="{'datepicker-dateRange-item-active':
                     (text.months[parse(value).getMonth()]  === m) &&
                     currDate.getFullYear() + pan === parse(value).getFullYear()}"
                       @click="monthSelect(stringifyYearHeader(currDate, pan), $index)"
                 >{{m.substr(0,3)}}</span>
-              </template>
+              </span>
             </div>
           </div>
         </div>
-      </template>
+      </span>
     </div>
     <div class="datepicker-popup" :style="paneStyle" v-show="displayYearView">
       <div class="datepicker-ctrl">
         <span class="datepicker-preBtn fa fa-chevron-left" aria-hidden="true" @click="preNextDecadeClick(0)"></span>
         <span class="datepicker-nextBtn fa fa-chevron-right" aria-hidden="true" @click="preNextDecadeClick(1)"></span>
       </div>
-      <template v-for="(p, pan) in pane" >
+      <span v-for="(p, pan) in pane" :key="p + 'pan3'">
         <div class="datepicker-inner">
           <div class="datepicker-body">
             <p>{{stringifyDecadeHeader(currDate, pan)}}</p>
             <div class="datepicker-monthRange decadeRange">
-              <template v-for="decade in decadeRange[pan]">
+              <span v-for="(decade, indexDecade) in decadeRange[pan]" :key="indexDecade + 'decade'">
                 <span :class="{'datepicker-dateRange-item-active':
                     parse(inputValue).getFullYear() === decade.text}"
                       @click.stop="yearSelect(decade.text)"
                 >{{decade.text}}</span>
-              </template>
+              </span>
             </div>
           </div>
         </div>
-      </template>
+      </span>
     </div>
   </div>
 </template>

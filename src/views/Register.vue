@@ -406,20 +406,6 @@
   import { labels } from '../mixins/labels'
   import countries from '../_countries'
 
-  // let defaultProps = {
-  //   number: '5526080000000006',
-  //   name: 'Card Holder',
-  //   expiry: '12/2020',
-  //   cvc: '123'
-  // }
-
-  let defaultProps = {
-    number: '',
-    name: '',
-    expiry: moment(),
-    cvc: ''
-  }
-
   export default {
     components: {FormWizard, TabContent, Icon, vSelect, VueMonthlyPicker},
     directives: { mask },

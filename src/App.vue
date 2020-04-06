@@ -8,8 +8,8 @@ export default {
   name: 'app',
   data() {
     return {
-      // appApiPath: 'http://127.0.0.1:8000',
-      appApiPath: 'https://rezervex.denet.men/api/public',
+      appApiPath: 'http://127.0.0.1:8000',
+      // appApiPath: 'https://rezervex.denet.men/api/public',
       reservationListScoped: []
     }
   },
