@@ -752,7 +752,7 @@ var translation = {
     infoAddProperty: 'Salon Ekleme formu, Kayıt butonuna basınız',
     infoDropImage: 'Salon Ekleme formu, Kayıt butonuna basınız',
     infoAddUser: 'Yeni Kullanıcı Ekleme Formu',
-    infoEditUser: 'Kullanıcı Güğncelleme Formu',
+    infoEditUser: 'Kullanıcı Güncelleme Formu',
     infoSetPrices: 'Salon ve tarih aralığını seçerek fiyat belirleyiniz',
     propertySelectDayNight: 'Gündüz - Gece fiyatı seçiniz',
     pricesRangesSelect: 'Tarih aralığı seçip fiyatı belirleyiniz',
@@ -802,7 +802,7 @@ var translation = {
     forThePeriod: 'Dönemlik',
     dayPrice: 'Gündüz Fiyatı',
     nightPrice: 'Gece Fiyatı',
-    newPriceWithDiscount: 'İndirim Uygulanmıoş Fiyat',
+    newPriceWithDiscount: 'İndirim Uygulanmış Fiyat',
     dayBusy: 'Gündüz Dolu',
     nightBusy: 'Gece Dolu',
     discountHigher: 'İndirim bundan fazla yapılamaz',
@@ -1081,16 +1081,16 @@ var translation = {
     confirmationTab: 'Onay Sekmesi',
     reservations: 'Opsiyonlar',
     reservationsSubtitle: 'Tüm müşteri opsiyonlarını bu listede görebilirsiniz. Opsiyonu rezervasyona çevirebilir ya da silebilirsiniz.',
-    reservationAddSuccess: 'Opsyon başarıyla gerçekleştirildi.', // For reservation page alert
-    noReservations: 'Opsyon yok.',
-    proceedWithBooking: 'Opsyon ekranına devam et', // For reservation page - table
+    reservationAddSuccess: 'Opsiyon başarıyla gerçekleştirildi.', // For reservation page alert
+    noReservations: 'Opsiyon yok.',
+    proceedWithBooking: 'Opsiyon ekranına devam et', // For reservation page - table
     removeReservation: 'Opsiyonu kaldır', // For reservation page - table
     reservationRemoval: 'Opsiyon kaldırıldı',
     alertReservationRemoveAsk: 'Bu opsiyonu silmek istesiğinizden emin misiniz?',
     reservationRemoveSuccess: 'Opsiyon başarıyla kaldırıldı!', // For reservation page alert
-    reservationContinue: 'Opsyona devam et.',
-    alertReservationContinueAsk: 'Seçili tarih ve müşteri için opsyona devam etmek istiyor musunuz?',
-    dayReserved: 'Opsyonlu', // change also in booking tab
+    reservationContinue: 'Opsiyona devam et.',
+    alertReservationContinueAsk: 'Seçili tarih ve müşteri için opsiyona devam etmek istiyor musunuz?',
+    dayReserved: 'Opsiyonlu', // change also in booking tab
     customerList: 'Müşteri Listesi',
     alertClienHasReservation: 'Müşterinin aşağıdaki tarihte opsiyonu bulunmaktadır:',
 
@@ -1119,8 +1119,8 @@ var translation = {
     status: 'Durum', // change also on payment page
     pending: 'Onayda', // change also on payment page
     complete: 'Tamamlandı',
-    reservationDetails: 'Opsyon Detayları',
-    reservationInfo: 'Opsyon Bilgileri',
+    reservationDetails: 'Opsiyon Detayları',
+    reservationInfo: 'Opsiyon Bilgileri',
     period: 'Dönem',
     payments: 'Ödemeler',
     completePayment: 'Ödemeyi tamamla', // for payment table
