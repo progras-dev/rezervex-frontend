@@ -1048,7 +1048,7 @@ var translation = {
     guest: 'Misafir',
     bookingServicesInfoText1: 'Hizmetlerin üzerine tıklayarak seçiniz, seçimi iptal etmek için tekrar tıklayınız.',
     bookingServicesInfoText2: 'Hizmet fiyatını değiştirmek için düzenle (kalem) butonuna tıklayınız. Değişiklik bu rezervasyon için geçerli olacaktır.',
-    pastDateError: 'Geçiş tarih seçtiniz!',
+    pastDateError: 'Geçmiş tarih seçtiniz!',
     markerRightClickInfo: 'Sağ tuşa basarak işaretleyiciyi görüntülüyebilirsiniz',
     logo: 'Logo',
     alertGuestBiggerThanServiceRange1: 'Bu servis için belirlenen kişi sayısı aralığında değil.',
