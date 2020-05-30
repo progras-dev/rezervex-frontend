@@ -1300,7 +1300,7 @@ var translation = {
     totalNumberItems: 'Toplam',
     read: 'oku',
     unread: 'okunmadı',
-    noContractsInTheSystem: 'No contracts has been created yet in the system. We suggest you first to create a contract model, so that it can be assigned to a property.',
+    noContractsInTheSystem: 'Şu an sistemde mevcut sözleşme bulunmamaktadır. Salon eklemeden önce sözleşme eklemeniz önerilir, böylece eklediğiniz salon ile sözleşmeyi eşleştirebilirsiniz. ',
     year: 'yıl',
     smsIncluded: 'SMS ',
     emailsIncluded: 'E-Posta',
