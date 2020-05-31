@@ -591,7 +591,7 @@
               </div>
 
               <toggle-button v-if="language == 'en'" class="toggleDayNight" v-model="dayPeriodToggle" :sync="true" @change="changeDayPeriod" :labels="{checked: 'Night', unchecked: 'Day'}" :width="150" :height="40" :color="{checked: '#8398ea', unchecked: '#82C7EB'}"/>
-              <toggle-button v-if="language == 'tr'" class="toggleDayNight" v-model="dayPeriodToggle" :sync="true" @change="changeDayPeriod" :labels="{checked: 'Gece', unchecked: 'Gün'}" :width="150" :height="40" :color="{checked: '#8398ea', unchecked: '#82C7EB'}"/>
+              <toggle-button v-if="language == 'tr'" class="toggleDayNight" v-model="dayPeriodToggle" :sync="true" @change="changeDayPeriod" :labels="{checked: 'Gece', unchecked: 'Gündüz'}" :width="150" :height="40" :color="{checked: '#8398ea', unchecked: '#82C7EB'}"/>
 
 
               <div class="form-group" v-if="properties">

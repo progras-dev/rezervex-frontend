@@ -14,8 +14,8 @@
 
     <p class="card-text normalText200"> 
       <span v-lang.totalRefund></span>: 
-      <span class="fontWeight300" v-if="!showTotalRefund">{{ bookingViewData.total_refund | numberFormat }}</span> 
-      <span class="fontWeight300" v-if="showTotalRefund">{{ totalRefund | numberFormat }}</span> 
+      <span ref="span1" class="fontWeight300" v-if="!showTotalRefund">{{ bookingViewData.total_refund | numberFormat }}</span> 
+      <span ref="span2" class="fontWeight300" v-if="showTotalRefund">{{ totalRefund | numberFormat }}</span> 
     </p>
 
     <div class="form-group" v-if="bookingViewData.advance">
