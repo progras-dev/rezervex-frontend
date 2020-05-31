@@ -30,9 +30,30 @@ export const createContractPdf = {
       console.log({contractInfo})
       let today = moment().format('DD-MM-YYYY')
       let contract = {
-        footer: [
-          {text: contractInfo.copyright, alignment: 'center', fontSize: 10}
-        ],
+        // footer: [
+        //   {text: contractInfo.copyright, alignment: 'center', fontSize: 10}
+        // ],
+        footer: function(currentPage, pageCount) {
+          return {
+              margin:10,
+              columns: [
+              {
+                  fontSize: 9,
+                  text:[
+                  {
+                  text: '--------------------------------------------------------------------------' +
+                  '\n',
+                  margin: [0, 20]
+                  },
+                  {
+                  text: `© ${contractInfo.copyright}   |   sayfa  ` + currentPage.toString() + ' of ' + pageCount,
+                  }
+                  ],
+                  alignment: 'center'
+              }
+              ]
+          };
+        },
         content: [],
         styles: {
           header: {

@@ -112,7 +112,7 @@
               <label for="inputText"><span v-lang.text></span></label>
               <div class="input-group">
                 <span class="input-group-addon mt3"><i class="fa fa-2x fa-edit iconColor"></i></span>
-                <textarea rows="5" class="form-control lightBorders" v-model.trim="contractData.text" id="inputText"></textarea>
+                <textarea rows="15" class="form-control lightBorders" v-model.trim="contractData.text" id="inputText"></textarea>
               </div>
               <small class="text-muted"><span v-lang.contractTextInfo></span></small>
             </div>
