@@ -46,7 +46,7 @@ export const createContractPdf = {
                   margin: [0, 20]
                   },
                   {
-                  text: `© ${contractInfo.copyright}   |   sayfa  ` + currentPage.toString() + ' of ' + pageCount,
+                  text: `${contractInfo.copyright}   |   sayfa  ` + currentPage.toString() + ' of ' + pageCount,
                   }
                   ],
                   alignment: 'center'
