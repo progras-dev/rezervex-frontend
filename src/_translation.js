@@ -651,6 +651,9 @@ var translation = {
     userUpdate: 'Update User',
     switchToPlan: 'Switch to plan',
     currentPlan: 'Current Plan',
+    companyTitle: 'Company Title',
+    brandTitle: 'Brand Title',
+    taxOffice: 'Tax Office',
   },
   tr: {
     // General
@@ -1309,6 +1312,9 @@ var translation = {
     userUpdate: 'Kullanıcı Düzenle',
     switchToPlan: 'Planı değiştir',
     currentPlan: 'Mevcut Plan',
+    companyTitle: 'Company Title', // Change also in labels
+    brandTitle: 'Brand Title',
+    taxOffice: 'Tax Office',
   }
 }
 

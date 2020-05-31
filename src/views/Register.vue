@@ -94,44 +94,30 @@
                     </div>
 
                     <div class="form-group">
-                      <label for="inputPhone"><span v-lang.phone></span></label>
+                      <label for="inputPassword"><span v-lang.password></span></label>
                       <div class="input-group">
-                        <span class="input-group-addon mt3"><i class="fa fa-2x fa-phone iconColor"></i></span>
-                        <div class="input-group-prepend">
-                          <span class="input-group-text" id="basic-addon1">{{selectedCountry.dial_code}}</span>
-                        </div>
-                        <input id="inputPhone" class="form-control lightBorders" type="tel" v-mask="'(###) ### ## ##'" :placeholder="'(###) ### ## ##'" v-model="phone" @input="$v.phone.$touch()" :class="{'is-invalid': !$v.phone.required && (userTabSubmitted || $v.phone.$error)}">
+                        <span class="input-group-addon mt3"><i class="fa fa-2x fa-key iconColor"></i></span>
+                        <input type="password" id="inputPassword" class="form-control lightBorders" :placeholder="labelPassword" v-model.trim="password" @input="checkPasswordEqual" @blur="$v.password.$touch()" :class="{'is-invalid': (!$v.password.required || !$v.password.minLength) && (userTabSubmitted || $v.password.$error)}">
                       </div>
-                      <div class="invalid-feedback" v-if="!$v.phone.required && userTabSubmitted">
-                        <span v-lang.phoneRequired></span>
+                      <div class="invalid-feedback" v-if="!$v.password.required && (userTabSubmitted || $v.password.$error)">
+                        <span v-lang.passwordRequired></span>
+                      </div>
+                      <div class="invalid-feedback" v-if="!$v.password.minLength && (userTabSubmitted || $v.password.$error)">
+                        <span v-lang.passwordLengthMin6></span>
                       </div>
                     </div>
 
                     <div class="form-group">
-                      <label for="inputName"><span v-lang.documentId></span></label>
+                      <label for="inputPasswordConfirm"><span v-lang.passwordConfirmation></span></label>
                       <div class="input-group">
-                        <span class="input-group-addon mt3"><i class="fa fa-2x fa-id-card iconColor"></i></span>
-                        <input 
-                          type="number" 
-                          id="documentId" 
-                          class="form-control lightBorders" 
-                          :placeholder="labelDocumentId" 
-                          v-model="documentId"
-                          maxlength="11"
-                          @blur="$v.documentId.$touch()"
-                          oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                          :class="{'is-invalid': (!$v.documentId.required || !$v.documentId.minLength || !$v.documentId.maxLength) && (cardTabSubmitted || $v.documentId.$error)}"
-                        />
+                        <span class="input-group-addon mt3"><i class="fa fa-2x fa-key iconColor"></i></span>
+                        <input type="password" id="inputPasswordConfirm" class="form-control lightBorders" :placeholder="labelPasswordConfirmation" v-model.trim="passwordConfirmation" @input="checkPasswordEqual" :class="{'is-invalid': (!$v.passwordConfirmation.required || passwordNotEqual) && userTabSubmitted}">
                       </div>
-                      <small class="form-text text-muted"> <span v-lang.requiredForPayment></span>  </small>
-                      <div class="invalid-feedback" v-if="!$v.documentId.required && userTabSubmitted">
-                        <span v-lang.documentIdRequired></span>
+                      <div class="invalid-feedback" v-if="!$v.passwordConfirmation.required && userTabSubmitted">
+                        <span v-lang.passwordConfirmationRequired></span>
                       </div>
-                      <div class="invalid-feedback" v-if="!$v.documentId.minLength && userTabSubmitted">
-                        <span v-lang.lengthMin11></span>
-                      </div>
-                      <div class="invalid-feedback" v-if="!$v.documentId.maxLength && userTabSubmitted">
-                        <span v-lang.lengthMax11></span>
+                      <div class="invalid-feedback" v-if="passwordNotEqual && userTabSubmitted">
+                        <span v-lang.passwordConfirmationEqual></span>
                       </div>
                     </div>
 
@@ -148,6 +134,36 @@
                   </div>
 
                   <form action="">
+
+                    <div class="form-group">
+                      <label for="inputName"><span v-lang.companyTitle></span></label>
+                      <div class="input-group">
+                        <span class="input-group-addon mt3"><i class="fa fa-2x fa-building iconColor"></i></span>
+                        <input id="company-title" class="form-control lightBorders" :placeholder="labelCompanyTitle" v-model="companyTitle">
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="inputName"><span v-lang.brandTitle></span></label>
+                      <div class="input-group">
+                        <span class="input-group-addon mt3"><i class="fa fa-2x fa-building iconColor"></i></span>
+                        <input id="brand-title" class="form-control lightBorders" :placeholder="labelBrandTitle" v-model="brandTitle">
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="inputPhone"><span v-lang.phone></span></label>
+                      <div class="input-group">
+                        <span class="input-group-addon mt3"><i class="fa fa-2x fa-phone iconColor"></i></span>
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" id="basic-addon1">{{selectedCountry.dial_code}}</span>
+                        </div>
+                        <input id="inputPhone" class="form-control lightBorders" type="tel" v-mask="'(###) ### ## ##'" :placeholder="'(###) ### ## ##'" v-model="phone" @input="$v.phone.$touch()" :class="{'is-invalid': !$v.phone.required && (addressTabSubmitted || $v.phone.$error)}">
+                      </div>
+                      <div class="invalid-feedback" v-if="!$v.phone.required && addressTabSubmitted">
+                        <span v-lang.phoneRequired></span>
+                      </div>
+                    </div>
 
                     <div class="form-group">
                       <label for="inputName"><span v-lang.country></span></label>
@@ -193,50 +209,48 @@
                       </div>
                     </div>
 
+                    <div class="form-group">
+                      <label for="inputName"><span v-lang.documentId></span></label>
+                      <div class="input-group">
+                        <span class="input-group-addon mt3"><i class="fa fa-2x fa-id-card iconColor"></i></span>
+                        <input 
+                          type="number" 
+                          id="documentId" 
+                          class="form-control lightBorders" 
+                          :placeholder="labelDocumentId" 
+                          v-model="documentId"
+                          maxlength="11"
+                          @blur="$v.documentId.$touch()"
+                          oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                          :class="{'is-invalid': (!$v.documentId.required || !$v.documentId.minLength || !$v.documentId.maxLength) && (cardTabSubmitted || $v.documentId.$error)}"
+                        />
+                      </div>
+                      <small class="form-text text-muted"> <span v-lang.requiredForPayment></span>  </small>
+                      <div class="invalid-feedback" v-if="!$v.documentId.required && addressTabSubmitted">
+                        <span v-lang.documentIdRequired></span>
+                      </div>
+                      <div class="invalid-feedback" v-if="!$v.documentId.minLength && addressTabSubmitted">
+                        <span v-lang.lengthMin11></span>
+                      </div>
+                      <div class="invalid-feedback" v-if="!$v.documentId.maxLength && addressTabSubmitted">
+                        <span v-lang.lengthMax11></span>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="inputName"><span v-lang.taxOffice></span></label>
+                      <div class="input-group">
+                        <span class="input-group-addon mt3"><i class="fa fa-2x fa-id-card iconColor"></i></span>
+                        <input id="tax-office" class="form-control lightBorders" :placeholder="labelTaxOffice" v-model="taxOffice">
+                      </div>
+                    </div>
+
                   </form>
 
                 </b-card>
               </tab-content>
 
-              <!--TAB 3 - PASSWORD -->
-              <tab-content :title="passwordTitle" icon="fa fa-key" :before-change="validatePasswordTab">
-                <b-card>
-                  <div slot="header">
-                   <span class="card-text text-success tab-title"><span v-lang.password></span></span>
-                  </div>
-                  <form action="">
-                    <div class="form-group">
-                      <label for="inputPassword"><span v-lang.password></span></label>
-                      <div class="input-group">
-                        <span class="input-group-addon mt3"><i class="fa fa-2x fa-key iconColor"></i></span>
-                        <input type="password" id="inputPassword" class="form-control lightBorders" :placeholder="labelPassword" v-model.trim="password" @input="checkPasswordEqual" @blur="$v.password.$touch()" :class="{'is-invalid': (!$v.password.required || !$v.password.minLength) && (passwordTabSubmitted || $v.password.$error)}">
-                      </div>
-                      <div class="invalid-feedback" v-if="!$v.password.required && (passwordTabSubmitted || $v.password.$error)">
-                        <span v-lang.passwordRequired></span>
-                      </div>
-                      <div class="invalid-feedback" v-if="!$v.password.minLength && (passwordTabSubmitted || $v.password.$error)">
-                        <span v-lang.passwordLengthMin6></span>
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <label for="inputPasswordConfirm"><span v-lang.passwordConfirmation></span></label>
-                      <div class="input-group">
-                        <span class="input-group-addon mt3"><i class="fa fa-2x fa-key iconColor"></i></span>
-                        <input type="password" id="inputPasswordConfirm" class="form-control lightBorders" :placeholder="labelPasswordConfirmation" v-model.trim="passwordConfirmation" @input="checkPasswordEqual" :class="{'is-invalid': (!$v.passwordConfirmation.required || passwordNotEqual) && passwordTabSubmitted}">
-                      </div>
-                      <div class="invalid-feedback" v-if="!$v.passwordConfirmation.required && passwordTabSubmitted">
-                        <span v-lang.passwordConfirmationRequired></span>
-                      </div>
-                      <div class="invalid-feedback" v-if="passwordNotEqual && passwordTabSubmitted">
-                        <span v-lang.passwordConfirmationEqual></span>
-                      </div>
-                    </div>
-                  </form>
-                </b-card>
-              </tab-content>
-
-              <!--TAB 4 - PLANS -->
+              <!--TAB 3 - PLANS -->
               <tab-content :title="pricingTitle" icon="fa fa-columns" :before-change="validatePlansTab">
                 <b-card>
                   <div slot="header">
@@ -422,6 +436,9 @@
         address: '',
         zipCode: '',
         phone: '',
+        taxOffice: '',
+        brandTitle: '',
+        companyTitle: '',
         selectedCountry: {},
         documentId: '',
         showSpinner: false,
@@ -429,7 +446,6 @@
         showErrorIyzipay: false,
         userTabSubmitted: false,
         addressTabSubmitted: false,
-        passwordTabSubmitted: false,
         cardTabSubmitted: false,
         passwordNotEqual: false,
         emailValidate: false,
@@ -587,6 +603,9 @@
           'plan_reference_code': this.activePlan.reference_code,
           'plan_pricing_reference_code': this.activePlan.pricingReferenceCode,
           'plan_status': this.activePlan.status,
+          'tax_office': this.taxOffice,
+          'brand_title': this.brandTitle,
+          'company_title': this.companyTitle,
         }
 
         this.$http.post(this.appApiPath + '/api/get_iyzipay_form', formData)
@@ -682,48 +701,39 @@
       validateUserTab() {
         this.$v.firstName.$touch()
         this.$v.lastName.$touch()
-        this.$v.phone.$touch()
         this.$v.email.$touch()
-        this.$v.documentId.$touch()
+        this.$v.password.$touch()
+        this.$v.passwordConfirmation.$touch()
         this.emailValidate = true
         this.userTabSubmitted = true
 
-        if (!this.emailIsUnique || this.$v.firstName.$invalid || this.$v.lastName.$invalid || this.$v.email.$invalid) {
+        if (!this.emailIsUnique || this.$v.firstName.$invalid || this.$v.lastName.$invalid || this.$v.email.$invalid || this.$v.password.$invalid || this.$v.passwordConfirmation.$invalid) {
           this.showSpinner = false
           return false
-        } else if (this.emailIsUnique && !this.$v.firstName.$invalid && !this.$v.lastName.$invalid && !this.$v.email.$invalid) {
+        } else if (this.password !== this.passwordConfirmation) {
+          this.passwordNotEqual = true
+        } else if (this.emailIsUnique && !this.$v.firstName.$invalid && !this.$v.lastName.$invalid && !this.$v.email.$invalid || !this.$v.password.$invalid && !this.$v.passwordConfirmation.$invalid) {
           // this.cardDetail.name = this.firstName + ' ' + this.lastName
           return true
         }
       },
       validateAddressTab() {
+        this.$v.phone.$touch()
         this.$v.city.$touch()
         this.$v.address.$touch()
         this.$v.zipCode.$touch()
+        this.$v.documentId.$touch()
         this.addressTabSubmitted = true
 
         if (!this.selectedCountry) {
           this.showCountryError = true
         }
 
-        if (this.$v.city.$invalid || this.$v.address.$invalid || this.$v.zipCode.$invalid || !this.selectedCountry) {
+        if (this.$v.phone.$invalid || this.$v.city.$invalid || this.$v.address.$invalid || this.$v.zipCode.$invalid || this.$v.documentId.$invalid || !this.selectedCountry) {
           this.showSpinner = false
           return false
-        } else if (!this.$v.city.$invalid && !this.$v.address.$invalid && !this.$v.zipCode.$invalid && this.selectedCountry) {
+        } else if (!this.$v.phone.$invalid && !this.$v.city.$invalid && !this.$v.address.$invalid && !this.$v.zipCode.$invalid && !this.$v.documentId.$invalid && this.selectedCountry) {
           this.showCountryError = false
-          return true
-        }
-      },
-      validatePasswordTab() {
-        this.passwordTabSubmitted = true
-        this.$v.password.$touch()
-        this.$v.passwordConfirmation.$touch()
-        if (this.$v.password.$invalid || this.$v.passwordConfirmation.$invalid) {
-          // second step validation failed'
-          return false
-        } else if (this.password !== this.passwordConfirmation) {
-          this.passwordNotEqual = true
-        } else if (!this.$v.password.$invalid && !this.$v.passwordConfirmation.$invalid) {
           return true
         }
       },
@@ -766,7 +776,7 @@
           this.showCardCvcError = false
         }
 
-        if (this.$v.documentId.$invalid || this.showCardNumberError || this.showCardNameError || this.showCardExpiryError || this.showCardCvcError) {
+        if ( this.showCardNumberError || this.showCardNameError || this.showCardExpiryError || this.showCardCvcError) {
           return false
         } else {
           return true
@@ -782,62 +792,6 @@
           this.showCountryError = true
         }
       },
-      // submitRegister() {
-      //   this.showSpinner = true
-      //   this.passwordNotEqual = false
-      //   let month = this.cardDetail.expiry.month() + 1
-      //   let year = this.cardDetail.expiry.year()
-      //   if (month < 10) {
-      //     month = '0' + month
-      //   }
-
-      //   let formData = {
-      //     'first_name': this.firstName,
-      //     'last_name': this.lastName,
-      //     'email': this.email,
-      //     'phone_prefix': this.selectedCountry.dial_code,
-      //     'phone': this.phone,
-      //     'document_id': this.documentId,
-      //     'password': this.password,
-      //     'city': this.city,
-      //     'address': this.address,
-      //     'country': this.selectedCountry.label,
-      //     'plan_id': this.activePlan.id,
-      //     'reference_code': this.activePlan.reference_code,
-      //     'payment_frequency': this.paymentFrequency,
-      //     'card_name': this.cardDetail.name,
-      //     'card_number': this.cardDetail.number.replace(/\s/g, ''),
-      //     'card_expiry_month': month,
-      //     'card_expiry_year': year,
-      //     'card_cvc': this.cardDetail.cvc,
-      //   }
-      //   this.$http.post(this.appApiPath + '/api/admin_register', formData)
-      //     .then(response => {
-      //       console.log('client_save api success')
-      //       console.log(response.body)
-      //       this.showSpinner = false
-      //       this.emailValidate = false
-      //       this.view = 'confirmation'
-      //     }, response => {
-      //       this.showSpinner = false
-      //       console.log('client_save api error')
-      //       console.log(response)
-
-      //       if (response.body.message === 'credit_card_validation_failed') {
-      //         this.showCreditCardValidationFailedAlert = true;
-      //       }
-
-      //       if (response.body.message === 'user_data_validation_failed') {
-      //         this.showCreditCardValidationUserDataFailed = true;
-      //       }
-
-      //       if (this.$language === 'en') {
-      //         this.$toasted.show('Something went wrong while trying to make the registration', {icon: 'fa-exclamation-triangle', type: 'error'})
-      //       } else if (this.$language === 'tr') {
-      //         this.$toasted.show('Rezervasyon yapılırken bir hata oluştu', {icon: 'fa-exclamation-triangle', type: 'error'})
-      //       }
-      //     })
-      // },
       updateTab() {
         this.showCreditCardValidationFailedAlert = false;
         this.showCreditCardValidationUserDataFailed = false;

@@ -37,6 +37,9 @@ export const labels = {
       labelDocumentId: '',
       labelTotalRefund: '',
       labelZipCode: '',
+      labelCompanyTitle: '',
+      labelBrandTitle: '',
+      labelTaxOffice: '',
     }
   },
   created: function () {
@@ -87,6 +90,9 @@ export const labels = {
         this.labelMinimumDeposit = 'Minimum Deposit'
         this.labelTotalRefund = 'Total refund'
         this.labelZipCode = 'Zip Code'
+        this.labelCompanyTitle = 'Company Title'
+        this.labelBrandTitle = 'Brand Title'
+        this.labelTaxOffice = 'Tax Office'
       } else if (this.language === 'tr') {
         this.labelName = 'Adı'
         this.labelFirstName = 'Adı'
@@ -130,6 +136,9 @@ export const labels = {
         this.labelMinimumDeposit = 'Minimum Deposit'
         this.labelTotalRefund = 'Total refund'
         this.labelZipCode = 'Zip Code'
+        this.labelCompanyTitle = 'Company Title'
+        this.labelBrandTitle = 'Brand Title'
+        this.labelTaxOffice = 'Tax Office'
       }
     }
   }
