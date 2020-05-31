@@ -668,7 +668,7 @@
                 if (this.$language === 'en') {
                   this.$toasted.show('The payment was successful! The total of emails available has increased.', {icon: 'fa-check-circle', type: 'success'})
                 } else if (this.$language === 'tr') {
-                  this.$toasted.show('The payment was successful! The total of emails available has increased.', {icon: 'fa-check-circle', type: 'success'})
+                  this.$toasted.show('Ödeme başarılı, E-Posta gönderim sayınız güncellendi.', {icon: 'fa-check-circle', type: 'success'})
                 }
               } else {
                 this.showPackageErrorMessage()
@@ -679,7 +679,7 @@
                 if (this.$language === 'en') {
                   this.$toasted.show('The payment was successful! The total of sms available has increased.', {icon: 'fa-check-circle', type: 'success'})
                 } else if (this.$language === 'tr') {
-                  this.$toasted.show('The payment was successful! The total of sms available has increased.', {icon: 'fa-check-circle', type: 'success'})
+                  this.$toasted.show('Ödeme başarılı, SMS gönderim sayınız güncellendi.', {icon: 'fa-check-circle', type: 'success'})
                 }
               } else {
                 this.showPackageErrorMessage()
@@ -699,7 +699,7 @@
         if (this.$language === 'en') {
           this.$toasted.show('Something went wrong while processing the payment.', {icon: 'fa-exclamation-triangle', type: 'error'})
         } else if (this.$language === 'tr') {
-          this.$toasted.show('Something went wrong while processing the payment.', {icon: 'fa-exclamation-triangle', type: 'error'})
+          this.$toasted.show('Ödeme işleminde bir sorun oluştu.', {icon: 'fa-exclamation-triangle', type: 'error'})
         }
       },
       openModalChangePlan() {

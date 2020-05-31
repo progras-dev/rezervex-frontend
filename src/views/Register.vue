@@ -361,7 +361,7 @@
 
                   <div class="d-flex flex-center flex-column" v-if="showErrorIyzipay">
                     <h3 class="text-danger">
-                      <span v-if="language === 'tr'">An error occurred while retrieving the payment form</span>
+                      <span v-if="language === 'tr'">Ödeme formu alınırken bir hata oluştu</span>
                       <span v-if="language === 'en'">An error occurred while retrieving the payment form</span>
                     </h3>
                   </div>

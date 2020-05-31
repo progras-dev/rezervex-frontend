@@ -77,7 +77,7 @@ export default {
         if (this.language === 'en') {
           this.$toasted.show('The total refund cannot be higher than the deposit paid. Please enter a different amount.', {icon: 'fa-exclamation-triangle', type: 'error'})
         } else if (this.language === 'tr') {
-          this.$toasted.show('Kalan miktar, borçtan fazla olamaz', {icon: 'fa-exclamation-triangle', type: 'error'})
+          this.$toasted.show('Toplam iade kapora miktarından fazla olamaz.', {icon: 'fa-exclamation-triangle', type: 'error'})
         }
         this.totalRefund = 0
       } else {

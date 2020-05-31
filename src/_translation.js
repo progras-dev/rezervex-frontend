@@ -1232,8 +1232,8 @@ var translation = {
     buyMoreSms: 'SMS Satın Al',
     totalItems: 'Toplam',
     purchase: 'Satın Al',
-    packagePurchaseError: 'Plan oluşturulurken bir hata oluştu, Lütfen teknik destek ekibimizle irtibata geçiniz.', // Subscription modal
-    minimumDeposit: 'Minimum Kapora', // also label
+    packagePurchaseError: 'Plan oluşturulurken bir hata oluştu, Lütfen teknik destek ekibimizle irtibata geçiniz.',
+    minimumDeposit: 'Minimum Kapora',
     calendar: 'Takvim',
     groomEmail: 'Damat E-posta',
     brideEmail: 'Gelin E-posta',
@@ -1245,22 +1245,22 @@ var translation = {
     colorsInfo: 'Renkler',
     totalPaid: 'Ödenen Toplam',
     refund: 'İade',
-    totalRefund: 'Toplam İade tutarı', // also label
-    refundBookingInfo: 'İade tutarı, eğer iade kabul etmiyorsanız 0 yazınız. .',
-    refundMustBeLessThanDeposit: 'Toplam iade kapora miktarından fazla olamaz. ', // BookingView
+    totalRefund: 'Toplam İade tutarı',
+    refundBookingInfo: 'İade tutarı, eğer iade kabul etmiyorsanız 0 yazınız.',
+    refundMustBeLessThanDeposit: 'Toplam iade kapora miktarından fazla olamaz.',
     bookingDeleted: 'Rezervasyon silindi.',
     lengthMin11: 'Minimum karakter sayısı: 11',
     lengthMax11: 'Maximum karakter sayısı: 11',
-    zipCode: 'Posta Kodu', // also label
+    zipCode: 'Posta Kodu',
     zipCodeRequired: 'Posta Kodu gerekli',
     loadingSecureForm: 'Güvenli Ödeme Formu Yükleniyor...',
-    errorIyzipay: 'Ödeme formu alınırken bir hata oluştu.', // change also Register.vue line 351
+    errorIyzipay: 'Ödeme formu alınırken bir hata oluştu.',
     choosePackage: 'Size uygun planı seçiniz.',
     totalEmails: 'Toplam E-Posta',
     totalSms: 'Toplam SMS',
-    paymentEmailSuccess: 'Ödeme başarılı, E-Posta gönderim sayınız güncellendi.', // change toast in Subscription.vue
-    paymentSmsSuccess: 'Ödeme başarılı, SMS gönderim sayınız güncellendi.', // change toast in Subscription.vue
-    paymentPackageError: 'Ödeme işleminde bir sorun oluştu.', // change toast in Subscription.vue
+    paymentEmailSuccess: 'Ödeme başarılı, E-Posta gönderim sayınız güncellendi.',
+    paymentSmsSuccess: 'Ödeme başarılı, SMS gönderim sayınız güncellendi.',
+    paymentPackageError: 'Ödeme işleminde bir sorun oluştu.',
     smsPackages: 'SMS Paketleri',
     emailPackages: 'E-Posta Paketleri',
     maxUsers: 'Maksimum Kullanıcı',
@@ -1307,7 +1307,7 @@ var translation = {
     year: 'yıl',
     smsIncluded: 'SMS ',
     emailsIncluded: 'E-Posta',
-    errorPaymentForm: 'Ödeme formu alınırken bir hata oluştu', // Change in Register.vue
+    errorPaymentForm: 'Ödeme formu alınırken bir hata oluştu',
     userCreate: 'Yeni Kullanıcı',
     userUpdate: 'Kullanıcı Düzenle',
     switchToPlan: 'Planı değiştir',
