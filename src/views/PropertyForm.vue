@@ -49,7 +49,7 @@
               <label for="inputDescription"><span v-lang.description></span></label>
               <div class="input-group">
                 <span class="input-group-addon mt3"><i class="fa fa-2x fa-edit iconColor"></i></span>
-                <textarea rows="5" class="form-control lightBorders" v-model.trim="propertyData.description" :placeholder="labelDescription" id="inputDescription"></textarea>
+                <textarea rows="10" class="form-control lightBorders" v-model.trim="propertyData.description" :placeholder="labelDescription" id="inputDescription"></textarea>
               </div>
             </div>
 
@@ -731,7 +731,7 @@
                   v-on:vdropzone-success="imageAdded"
                   v-on:vdropzone-removed-file="imageRemoved"
                 ></vue-dropzone>
-                <small class="form-text text-muted"><span v-lang.maxFiles></span>: 3 - <span v-lang.maxFilesize></span>: 10Mb</small>
+                <small class="form-text text-muted"><span v-lang.maxFilesize></span>: 10Mb</small>
               </div>
             </div>
 
@@ -858,7 +858,6 @@
           destroyDropzone: false,
           headers: { 'My-Awesome-Header': 'header value' },
           acceptedFiles: 'image/jpeg, image/png, image/jpg',
-          maxFiles: 3,
           maxFilesize: 10,
         },
         boolean: false,
