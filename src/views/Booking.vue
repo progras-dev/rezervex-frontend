@@ -296,14 +296,34 @@
 
                   <div v-if="offer.withServices">
                     <span class="offerServiceTitle text-info mb-1">
-                      <i class="fa fa-tags"></i>  <span v-lang.services></span>:
+                      <i class="fa fa-tags"></i> &nbsp; <b><span v-lang.services></span></b>:
                     </span>
                     <div v-for="(service, index) in serviceListScoped" :key="index" class="offerServiceContainer">
                       <span class="offerServiceName">{{service.name}}</span>
                       <span class="offerServiceDescription" v-if="service.description !== ''">{{service.description}}</span>
-                      <span class="offerServicePrice"> <span v-lang.serviceCost></span>: {{service.cost | numberFormat}}  |  <span v-lang.pricePlusService></span>: {{ offer.totalCost | numberFormat }} </span>
+                      <span class="offerServicePrice"> 
+                        <span v-lang.serviceCost></span>: 
+                        {{service.totalCost | numberFormat}} 
+                        <span v-if="service.type === 'flexible' && service.range_type === 'default' && totalGuests <= 100 && !isEditingExistingBooking" >
+                          ({{ service.cost1 | numberFormat }} * {{ totalGuests }} <span v-lang.guest></span>)
+                        </span>
+                        <span v-if="service.type === 'flexible' && service.range_type === 'default' && totalGuests <= 250 && totalGuests > 100 && !isEditingExistingBooking" >
+                         ({{ service.cost2 | numberFormat }} * {{ totalGuests }} <span v-lang.guest></span>)
+                        </span>
+                        <span v-if="service.type === 'flexible' && service.range_type === 'default' && totalGuests <= 500 && totalGuests > 250 && !isEditingExistingBooking" >
+                          ({{ service.cost3 | numberFormat }} * {{ totalGuests }} <span v-lang.guest></span>)
+                        </span>
+                        <span v-if="service.type === 'flexible' && service.range_type === 'default' && totalGuests > 500 && !isEditingExistingBooking" >
+                          ({{ service.cost4 | numberFormat }} * {{ totalGuests }} <span v-lang.guest></span>)
+                        </span>
+                        <span v-if="service.type === 'flexible' && service.range_type === 'default' && isEditingExistingBooking" >
+                          ({{ service.cost | numberFormat }} * {{ totalGuests }} <span v-lang.guest></span>)
+                        </span>
+                      </span>
                     </div>
                   </div>
+
+                  <p class="offerServiceName"><span v-lang.pricePlusService></span>: {{ offer.totalCost | numberFormat }}</p>
 
                   <div style="display: flex;">
                     <div class="input-group" style="margin-right: 10px">
@@ -1558,6 +1578,8 @@
             if (this.totalGuests > service.range_costs[service.range_costs.length - 1].max) {
               service.totalCost = service.range_costs[service.range_costs.length - 1].cost * this.totalGuests
             }
+          } else if (service.type === 'fixed') {
+            service.totalCost = service.cost
           }
           this.serviceListScoped.push(service)
         }
@@ -1785,6 +1807,9 @@
         this.calculateTotalCost()
       },
       generateOffers() {
+        console.warn('generateOffers')
+        console.log('serviceListScoped', this.serviceListScoped)
+        // Reset offer list
         this.offerList = []
 
         // Order days by date
@@ -1817,61 +1842,20 @@
             let longDate = moment(date).lang('tr').format('dddd Do MMMM')
             let servicesCost = this.calculateServicesCost(this.serviceListScoped)
 
-            // Add offer DAY without services
-            let offer1 = {}
-            offer1.date = date
-            offer1.shortDate = shortDate
-            offer1.longDate = longDate
-            offer1.withServices = false
-            offer1.dayType = 'day'
-            offer1.servicesCost = 0
-            if (this.pricesArray['day'][date]) {
-              offer1.price = this.pricesArray['day'][date].price
+            let offer = {}
+            offer.date = date
+            offer.shortDate = shortDate
+            offer.longDate = longDate
+            offer.withServices = true
+            offer.dayType = this.dayPeriod
+            if (this.pricesArray[this.dayPeriod][date]) {
+              offer.price = this.pricesArray[this.dayPeriod][date].price
             } else {
-              offer1.price = this.defaultPricesData[dateYear][this.currentMonthSeason]['day'][dayType]
+              offer.price = this.defaultPricesData[dateYear][this.currentMonthSeason][this.dayPeriod][dayType]
             }
-            offer1.totalCost = offer1.price
-            // this.offerList.push(offer1)
-
-            // Add offer DAY with services
-            let offer2 = {}
-            offer2.date = date
-            offer2.shortDate = shortDate
-            offer2.longDate = longDate
-            offer2.withServices = true
-            offer2.dayType = 'day'
-            offer2.price = offer1.price
-            offer2.servicesCost = servicesCost
-            offer2.totalCost = offer1.price + servicesCost
-            this.offerList.push(offer2)
-
-            // Add offer NIGHT without services
-            let offer3 = {}
-            offer3.date = date
-            offer3.shortDate = shortDate
-            offer3.longDate = longDate
-            offer3.withServices = false
-            offer3.dayType = 'night'
-            offer3.servicesCost = 0
-            if (this.pricesArray['night'][date]) {
-              offer3.price = this.pricesArray['night'][date].price
-            } else {
-              offer3.price = this.defaultPricesData[dateYear][this.currentMonthSeason]['night'][dayType]
-            }
-            offer3.totalCost = offer3.price
-            // this.offerList.push(offer3)
-
-            // Add offer NIGHT with services
-            let offer4 = {}
-            offer4.date = date
-            offer4.shortDate = shortDate
-            offer4.longDate = longDate
-            offer4.withServices = true
-            offer4.dayType = 'night'
-            offer4.servicesCost = servicesCost
-            offer4.price = offer3.price
-            offer4.totalCost = offer3.price + servicesCost
-            this.offerList.push(offer4)
+            offer.servicesCost = servicesCost
+            offer.totalCost = offer.price + servicesCost
+            this.offerList.push(offer)
           }
           if (this.activeOrderOffer === 'price') {
             this.orderOffers('price')
@@ -1879,10 +1863,12 @@
         }
       },
       calculateServicesCost(services) {
+        console.warn('calculateServicesCost')
         let servicesTotalCost = 0
 
         for (let i = 0; i < services.length; i++) {
           let service = {...services[i]}
+          console.log({service})
 
           if (service.type === 'fixed') {
             servicesTotalCost += service.cost
@@ -3293,497 +3279,497 @@
           this.showAlertService = false
         }
       },
-      printOffer(event) {
-        event.preventDefault()
-        let today = moment().format('DD-MM-YYYY')
-        let price
+      // printOffer(event) {
+      //   event.preventDefault()
+      //   let today = moment().format('DD-MM-YYYY')
+      //   let price
 
-        if (this.hasDiscount) {
-          price = this.newPrice
-        } else {
-          price = this.currentPrice
-        }
-        let offer = {
-          footer: [
-            {text: this.currentProperty.contract.copyright, alignment: 'center'}
-          ],
-          content: [],
-          styles: {
-            header: {
-              fontSize: 22,
-              bold: true,
-            },
-            emptyLine: {
-              fontSize: 20,
-            },
-            date: {
-              italics: false,
-              alignment: 'right',
-              margin: [0, 10, 79, 0]
-            },
-            mt10: {
-              margin: [0, 10, 0, 0]
-            },
-            tableExample: {
-              margin: [0, 5, 0, 5],
-            },
-          }
-        }
+      //   if (this.hasDiscount) {
+      //     price = this.newPrice
+      //   } else {
+      //     price = this.currentPrice
+      //   }
+      //   let offer = {
+      //     footer: [
+      //       {text: this.currentProperty.contract.copyright, alignment: 'center'}
+      //     ],
+      //     content: [],
+      //     styles: {
+      //       header: {
+      //         fontSize: 22,
+      //         bold: true,
+      //       },
+      //       emptyLine: {
+      //         fontSize: 20,
+      //       },
+      //       date: {
+      //         italics: false,
+      //         alignment: 'right',
+      //         margin: [0, 10, 79, 0]
+      //       },
+      //       mt10: {
+      //         margin: [0, 10, 0, 0]
+      //       },
+      //       tableExample: {
+      //         margin: [0, 5, 0, 5],
+      //       },
+      //     }
+      //   }
 
-        if (this.currentProperty.contract.base64) {
-          offer.content.push({columns: [
-            {
-              width: 120,
-              // height: 90,
-              image: this.currentProperty.contract.base64,
-            },
+      //   if (this.currentProperty.contract.base64) {
+      //     offer.content.push({columns: [
+      //       {
+      //         width: 120,
+      //         // height: 90,
+      //         image: this.currentProperty.contract.base64,
+      //       },
 
-            {
-              width: '*',
-              text: [
-                {text: '   ' + '\n', style: 'emptyLine'},
-                {text: '   ' + '\n', style: 'emptyLine'},
-                {text: this.currentProperty.contract.title + '\n', style: 'header'},
-                {text: this.currentProperty.contract.subtitle, fontSize: 16}
-              ],
-              margin: [30, 0, 0, 0]
-            }
-          ]})
-        } else {
-          offer.content.push({
-            text: [
-              {text: '   ' + '\n', style: 'emptyLine'},
-              {text: '   ' + '\n', style: 'emptyLine'},
-              {text: this.currentProperty.contract.title + '\n', style: 'header'},
-              {text: this.currentProperty.contract.subtitle, fontSize: 16}
-            ]
-          })
-        }
+      //       {
+      //         width: '*',
+      //         text: [
+      //           {text: '   ' + '\n', style: 'emptyLine'},
+      //           {text: '   ' + '\n', style: 'emptyLine'},
+      //           {text: this.currentProperty.contract.title + '\n', style: 'header'},
+      //           {text: this.currentProperty.contract.subtitle, fontSize: 16}
+      //         ],
+      //         margin: [30, 0, 0, 0]
+      //       }
+      //     ]})
+      //   } else {
+      //     offer.content.push({
+      //       text: [
+      //         {text: '   ' + '\n', style: 'emptyLine'},
+      //         {text: '   ' + '\n', style: 'emptyLine'},
+      //         {text: this.currentProperty.contract.title + '\n', style: 'header'},
+      //         {text: this.currentProperty.contract.subtitle, fontSize: 16}
+      //       ]
+      //     })
+      //   }
 
-        var contentArray = []
+      //   var contentArray = []
 
-        if (this.language === 'tr') {
-          contentArray.push({ text: 'tarih: ' + today, style: 'date' })
-        } else if (this.language === 'en') {
-          contentArray.push({ text: 'date: ' + today, style: 'date' })
-        }
+      //   if (this.language === 'tr') {
+      //     contentArray.push({ text: 'tarih: ' + today, style: 'date' })
+      //   } else if (this.language === 'en') {
+      //     contentArray.push({ text: 'date: ' + today, style: 'date' })
+      //   }
 
-        for (let i = 0; i < this.currentProperty.contract.fields.length; i++) {
-          let field = {...this.currentProperty.contract.fields[i]}
-          // Enter manager data if user is manager
-          if (this.user.role === 'manager') {
-            if (field.identifier === 'manager_name') {
-              contentArray.push({
-                columns: [
-                  {
-                    width: 130,
-                    text: this.language === 'tr' ? field.name_tr + ':' : field.name_en + ':',
-                    margin: [0, 20, 0, 0]
-                  },
-                  {
-                    width: '*',
-                    text: this.user.first_name + ' ' + this.user.last_name,
-                    decoration: 'underline',
-                    decorationStyle: 'dotted',
-                    margin: [0, 20, 0, 0]
-                  }
-                ]
-              })
-            }
+      //   for (let i = 0; i < this.currentProperty.contract.fields.length; i++) {
+      //     let field = {...this.currentProperty.contract.fields[i]}
+      //     // Enter manager data if user is manager
+      //     if (this.user.role === 'manager') {
+      //       if (field.identifier === 'manager_name') {
+      //         contentArray.push({
+      //           columns: [
+      //             {
+      //               width: 130,
+      //               text: this.language === 'tr' ? field.name_tr + ':' : field.name_en + ':',
+      //               margin: [0, 20, 0, 0]
+      //             },
+      //             {
+      //               width: '*',
+      //               text: this.user.first_name + ' ' + this.user.last_name,
+      //               decoration: 'underline',
+      //               decorationStyle: 'dotted',
+      //               margin: [0, 20, 0, 0]
+      //             }
+      //           ]
+      //         })
+      //       }
 
-            if (field.identifier === 'manager_phone') {
-              contentArray.push({
-                columns: [
-                  {
-                    width: 130,
-                    text: this.language === 'tr' ? field.name_tr + ':' : field.name_en + ':'
-                  },
-                  {
-                    width: '*',
-                    text: this.user.phone ? this.user.phone : '',
-                    decoration: 'underline',
-                    decorationStyle: 'dotted',
-                  }
-                ]
-              })
-            }
+      //       if (field.identifier === 'manager_phone') {
+      //         contentArray.push({
+      //           columns: [
+      //             {
+      //               width: 130,
+      //               text: this.language === 'tr' ? field.name_tr + ':' : field.name_en + ':'
+      //             },
+      //             {
+      //               width: '*',
+      //               text: this.user.phone ? this.user.phone : '',
+      //               decoration: 'underline',
+      //               decorationStyle: 'dotted',
+      //             }
+      //           ]
+      //         })
+      //       }
 
-            if (field.identifier === 'manager_address') {
-              contentArray.push({
-                columns: [
-                  {
-                    width: 130,
-                    text: this.language === 'tr' ? field.name_tr + ':' : field.name_en + ':'
-                  },
-                  {
-                    width: '*',
-                    text: this.user.address ? this.user.address : '',
-                    decoration: 'underline',
-                    decorationStyle: 'dotted',
-                  }
-                ]
-              })
-            }
-          } else {
-            // Enter user data if user is admin
-            if (field.identifier === 'manager_name') {
-              contentArray.push({
-                columns: [
-                  {
-                    width: 130,
-                    text: this.language === 'tr' ? field.name_tr + ':' : field.name_en + ':',
-                    margin: [0, 20, 0, 0]
-                  },
-                  {
-                    width: '*',
-                    text: this.user.first_name + ' ' + this.user.last_name,
-                    decoration: 'underline',
-                    decorationStyle: 'dotted',
-                    margin: [0, 20, 0, 0]
-                  }
-                ]
-              })
-            }
+      //       if (field.identifier === 'manager_address') {
+      //         contentArray.push({
+      //           columns: [
+      //             {
+      //               width: 130,
+      //               text: this.language === 'tr' ? field.name_tr + ':' : field.name_en + ':'
+      //             },
+      //             {
+      //               width: '*',
+      //               text: this.user.address ? this.user.address : '',
+      //               decoration: 'underline',
+      //               decorationStyle: 'dotted',
+      //             }
+      //           ]
+      //         })
+      //       }
+      //     } else {
+      //       // Enter user data if user is admin
+      //       if (field.identifier === 'manager_name') {
+      //         contentArray.push({
+      //           columns: [
+      //             {
+      //               width: 130,
+      //               text: this.language === 'tr' ? field.name_tr + ':' : field.name_en + ':',
+      //               margin: [0, 20, 0, 0]
+      //             },
+      //             {
+      //               width: '*',
+      //               text: this.user.first_name + ' ' + this.user.last_name,
+      //               decoration: 'underline',
+      //               decorationStyle: 'dotted',
+      //               margin: [0, 20, 0, 0]
+      //             }
+      //           ]
+      //         })
+      //       }
 
-            if (field.identifier === 'manager_phone') {
-              contentArray.push({
-                columns: [
-                  {
-                    width: 130,
-                    text: this.language === 'tr' ? field.name_tr + ':' : field.name_en + ':'
-                  },
-                  {
-                    width: '*',
-                    text: this.user.phone ? this.user.phone : '',
-                    decoration: 'underline',
-                    decorationStyle: 'dotted',
-                  }
-                ]
-              })
-            }
+      //       if (field.identifier === 'manager_phone') {
+      //         contentArray.push({
+      //           columns: [
+      //             {
+      //               width: 130,
+      //               text: this.language === 'tr' ? field.name_tr + ':' : field.name_en + ':'
+      //             },
+      //             {
+      //               width: '*',
+      //               text: this.user.phone ? this.user.phone : '',
+      //               decoration: 'underline',
+      //               decorationStyle: 'dotted',
+      //             }
+      //           ]
+      //         })
+      //       }
 
-            if (field.identifier === 'manager_address') {
-              contentArray.push({
-                columns: [
-                  {
-                    width: 130,
-                    text: this.language === 'tr' ? field.name_tr + ':' : field.name_en + ':'
-                  },
-                  {
-                    width: '*',
-                    text: this.user.address ? this.user.address : '',
-                    decoration: 'underline',
-                    decorationStyle: 'dotted',
-                  }
-                ]
-              })
-            }
-          }
+      //       if (field.identifier === 'manager_address') {
+      //         contentArray.push({
+      //           columns: [
+      //             {
+      //               width: 130,
+      //               text: this.language === 'tr' ? field.name_tr + ':' : field.name_en + ':'
+      //             },
+      //             {
+      //               width: '*',
+      //               text: this.user.address ? this.user.address : '',
+      //               decoration: 'underline',
+      //               decorationStyle: 'dotted',
+      //             }
+      //           ]
+      //         })
+      //       }
+      //     }
 
-          if (field.identifier === 'client_name') {
-            contentArray.push({
-              columns: [
-                {
-                  width: 130,
-                  text: this.language === 'tr' ? field.name_tr + ':' : field.name_en + ':',
-                  style: 'mt10'
-                },
-                {
-                  width: '*',
-                  text: this.clientFullName,
-                  decoration: 'underline',
-                  decorationStyle: 'dotted',
-                  style: 'mt10'
-                }
-              ]
-            })
-          }
+      //     if (field.identifier === 'client_name') {
+      //       contentArray.push({
+      //         columns: [
+      //           {
+      //             width: 130,
+      //             text: this.language === 'tr' ? field.name_tr + ':' : field.name_en + ':',
+      //             style: 'mt10'
+      //           },
+      //           {
+      //             width: '*',
+      //             text: this.clientFullName,
+      //             decoration: 'underline',
+      //             decorationStyle: 'dotted',
+      //             style: 'mt10'
+      //           }
+      //         ]
+      //       })
+      //     }
 
-          if (field.identifier === 'client_phone') {
-            contentArray.push({
-              columns: [
-                {
-                  width: 130,
-                  text: this.language === 'tr' ? field.name_tr + ':' : field.name_en + ':'
-                },
-                {
-                  width: '*',
-                  text: this.clientPhone,
-                  decoration: 'underline',
-                  decorationStyle: 'dotted',
-                }
-              ]
-            })
-          }
+      //     if (field.identifier === 'client_phone') {
+      //       contentArray.push({
+      //         columns: [
+      //           {
+      //             width: 130,
+      //             text: this.language === 'tr' ? field.name_tr + ':' : field.name_en + ':'
+      //           },
+      //           {
+      //             width: '*',
+      //             text: this.clientPhone,
+      //             decoration: 'underline',
+      //             decorationStyle: 'dotted',
+      //           }
+      //         ]
+      //       })
+      //     }
 
-          if (field.identifier === 'client_email') {
-            contentArray.push({
-              columns: [
-                {
-                  width: 130,
-                  text: this.language === 'tr' ? field.name_tr + ':' : field.name_en + ':'
-                },
-                {
-                  width: '*',
-                  text: this.clientEmail,
-                  decoration: 'underline',
-                  decorationStyle: 'dotted',
-                }
-              ]
-            })
-          }
+      //     if (field.identifier === 'client_email') {
+      //       contentArray.push({
+      //         columns: [
+      //           {
+      //             width: 130,
+      //             text: this.language === 'tr' ? field.name_tr + ':' : field.name_en + ':'
+      //           },
+      //           {
+      //             width: '*',
+      //             text: this.clientEmail,
+      //             decoration: 'underline',
+      //             decorationStyle: 'dotted',
+      //           }
+      //         ]
+      //       })
+      //     }
 
-          if (field.identifier === 'property_name') {
-            contentArray.push({
-              columns: [
-                {
-                  width: 130,
-                  text: this.language === 'tr' ? field.name_tr + ':' : field.name_en + ':',
-                  style: 'mt10'
-                },
-                {
-                  width: '*',
-                  text: this.currentProperty.name,
-                  decoration: 'underline',
-                  decorationStyle: 'dotted',
-                  style: 'mt10'
-                }
-              ]
-            })
-          }
+      //     if (field.identifier === 'property_name') {
+      //       contentArray.push({
+      //         columns: [
+      //           {
+      //             width: 130,
+      //             text: this.language === 'tr' ? field.name_tr + ':' : field.name_en + ':',
+      //             style: 'mt10'
+      //           },
+      //           {
+      //             width: '*',
+      //             text: this.currentProperty.name,
+      //             decoration: 'underline',
+      //             decorationStyle: 'dotted',
+      //             style: 'mt10'
+      //           }
+      //         ]
+      //       })
+      //     }
 
-          if (field.identifier === 'wedding_date') {
-            contentArray.push({
-              columns: [
-                {
-                  width: 130,
-                  text: this.language === 'tr' ? field.name_tr + ':' : field.name_en + ':'
-                },
-                {
-                  width: '*',
-                  text: moment(this.date).format('DD-MM-YYYY'),
-                  decoration: 'underline',
-                  decorationStyle: 'dotted',
-                }
-              ]
-            })
-          }
+      //     if (field.identifier === 'wedding_date') {
+      //       contentArray.push({
+      //         columns: [
+      //           {
+      //             width: 130,
+      //             text: this.language === 'tr' ? field.name_tr + ':' : field.name_en + ':'
+      //           },
+      //           {
+      //             width: '*',
+      //             text: moment(this.date).format('DD-MM-YYYY'),
+      //             decoration: 'underline',
+      //             decorationStyle: 'dotted',
+      //           }
+      //         ]
+      //       })
+      //     }
 
-          if (field.identifier === 'wedding_time') {
-            contentArray.push({
-              columns: [
-                {
-                  width: 130,
-                  text: this.language === 'tr' ? field.name_tr + ':' : field.name_en + ':'
-                },
-                {
-                  width: '*',
-                  text: this.timeStart.HH + ':' + this.timeStart.mm + ' - ' + this.timeEnd.HH + ':' + this.timeEnd.mm,
-                  decoration: 'underline',
-                  decorationStyle: 'dotted',
-                }
-              ]
-            })
-          }
+      //     if (field.identifier === 'wedding_time') {
+      //       contentArray.push({
+      //         columns: [
+      //           {
+      //             width: 130,
+      //             text: this.language === 'tr' ? field.name_tr + ':' : field.name_en + ':'
+      //           },
+      //           {
+      //             width: '*',
+      //             text: this.timeStart.HH + ':' + this.timeStart.mm + ' - ' + this.timeEnd.HH + ':' + this.timeEnd.mm,
+      //             decoration: 'underline',
+      //             decorationStyle: 'dotted',
+      //           }
+      //         ]
+      //       })
+      //     }
 
-          if (field.identifier === 'total_guests') {
-            contentArray.push({
-              columns: [
-                {
-                  width: 130,
-                  text: this.language === 'tr' ? field.name_tr + ':' : field.name_en + ':',
-                  style: 'mt10'
-                },
-                {
-                  width: '*',
-                  text: this.totalGuests,
-                  decoration: 'underline',
-                  decorationStyle: 'dotted',
-                  style: 'mt10'
-                }
-              ]
-            })
-          }
+      //     if (field.identifier === 'total_guests') {
+      //       contentArray.push({
+      //         columns: [
+      //           {
+      //             width: 130,
+      //             text: this.language === 'tr' ? field.name_tr + ':' : field.name_en + ':',
+      //             style: 'mt10'
+      //           },
+      //           {
+      //             width: '*',
+      //             text: this.totalGuests,
+      //             decoration: 'underline',
+      //             decorationStyle: 'dotted',
+      //             style: 'mt10'
+      //           }
+      //         ]
+      //       })
+      //     }
 
-          if (field.identifier === 'services') {
-            if (this.addedServices.length > 0) {
-              contentArray.push({text: 'Ekstralar: ', width: 130, style: 'mt10'})
-            }
+      //     if (field.identifier === 'services') {
+      //       if (this.addedServices.length > 0) {
+      //         contentArray.push({text: 'Ekstralar: ', width: 130, style: 'mt10'})
+      //       }
 
-            for (let i = 0; i < this.addedServices.length; i++) {
-              let service = {...this.addedServices[i]}
-              if (service.type === 'flexible' && service.range_type === 'default') {
-                if (this.totalGuests < 100) {
-                  contentArray.push({
-                    text: service.name + ' - (' + service.cost1 + '₺ * ' + this.totalGuests + ') - ' + service.cost1 * this.totalGuests + '₺ ',
-                    italics: true
-                  })
-                } else if (this.totalGuests < 250) {
-                  contentArray.push({
-                    text: service.name + ' - (' + service.cost2 + '₺ * ' + this.totalGuests + ') - ' + service.cost2 * this.totalGuests + '₺ ',
-                    italics: true
-                  })
-                } else if (this.totalGuests < 500) {
-                  contentArray.push({
-                    text: service.name + ' - (' + service.cost3 + '₺ * ' + this.totalGuests + ') - ' + service.cost3 * this.totalGuests + '₺ ',
-                    italics: true
-                  })
-                } else if (this.totalGuests >= 500) {
-                  contentArray.push({
-                    text: service.name + ' - (' + service.cost4 + '₺ * ' + this.totalGuests + ') - ' + service.cost4 * this.totalGuests + '₺ ',
-                    italics: true
-                  })
-                }
-              } else if (service.type === 'flexible' && service.range_type === 'custom') {
-                for (let j = 0; j < service.range_costs.length; j++) {
-                  let rangeData = {...service.range_costs[j]}
-                  if (this.totalGuests <= rangeData.min && this.totalGuests <= rangeData.max) {
-                    contentArray.push({
-                      text: service.name + ' - (' + rangeData.cost + '₺ * ' + this.totalGuests + ') - ' + rangeData.cost * this.totalGuests + '₺ ',
-                      italics: true
-                    })
-                  }
-                }
-                // If totalGuests number is bigger than contemplated in the range
-                if (this.totalGuests > service.range_costs[service.range_costs.length - 1].max) {
-                  let cost = service.range_costs[service.range_costs.length - 1].cost
-                  contentArray.push({
-                    text: service.name + ' - (' + cost + '₺ * ' + this.totalGuests + ') - ' + cost * this.totalGuests + '₺ ',
-                    italics: true
-                  })
-                }
-              } else if (service.type === 'fixed') {
-                contentArray.push({text: service.name + ' - ' + service.cost + '₺', italics: true})
-              }
-            }
+      //       for (let i = 0; i < this.addedServices.length; i++) {
+      //         let service = {...this.addedServices[i]}
+      //         if (service.type === 'flexible' && service.range_type === 'default') {
+      //           if (this.totalGuests < 100) {
+      //             contentArray.push({
+      //               text: service.name + ' - (' + service.cost1 + '₺ * ' + this.totalGuests + ') - ' + service.cost1 * this.totalGuests + '₺ ',
+      //               italics: true
+      //             })
+      //           } else if (this.totalGuests < 250) {
+      //             contentArray.push({
+      //               text: service.name + ' - (' + service.cost2 + '₺ * ' + this.totalGuests + ') - ' + service.cost2 * this.totalGuests + '₺ ',
+      //               italics: true
+      //             })
+      //           } else if (this.totalGuests < 500) {
+      //             contentArray.push({
+      //               text: service.name + ' - (' + service.cost3 + '₺ * ' + this.totalGuests + ') - ' + service.cost3 * this.totalGuests + '₺ ',
+      //               italics: true
+      //             })
+      //           } else if (this.totalGuests >= 500) {
+      //             contentArray.push({
+      //               text: service.name + ' - (' + service.cost4 + '₺ * ' + this.totalGuests + ') - ' + service.cost4 * this.totalGuests + '₺ ',
+      //               italics: true
+      //             })
+      //           }
+      //         } else if (service.type === 'flexible' && service.range_type === 'custom') {
+      //           for (let j = 0; j < service.range_costs.length; j++) {
+      //             let rangeData = {...service.range_costs[j]}
+      //             if (this.totalGuests <= rangeData.min && this.totalGuests <= rangeData.max) {
+      //               contentArray.push({
+      //                 text: service.name + ' - (' + rangeData.cost + '₺ * ' + this.totalGuests + ') - ' + rangeData.cost * this.totalGuests + '₺ ',
+      //                 italics: true
+      //               })
+      //             }
+      //           }
+      //           // If totalGuests number is bigger than contemplated in the range
+      //           if (this.totalGuests > service.range_costs[service.range_costs.length - 1].max) {
+      //             let cost = service.range_costs[service.range_costs.length - 1].cost
+      //             contentArray.push({
+      //               text: service.name + ' - (' + cost + '₺ * ' + this.totalGuests + ') - ' + cost * this.totalGuests + '₺ ',
+      //               italics: true
+      //             })
+      //           }
+      //         } else if (service.type === 'fixed') {
+      //           contentArray.push({text: service.name + ' - ' + service.cost + '₺', italics: true})
+      //         }
+      //       }
 
-            if (this.addedServices.length > 0) {
-              contentArray.push({text: '', margin: [0, 0, 0, 20]})
-            }
+      //       if (this.addedServices.length > 0) {
+      //         contentArray.push({text: '', margin: [0, 0, 0, 20]})
+      //       }
 
-            if (this.addedServices.length === 0) {
-              contentArray.push({
-                columns: [
-                  {
-                    width: 130,
-                    text: 'Ekstralar: ',
-                    style: 'mt10'
-                  },
-                  {
-                    width: '*',
-                    text: 'Ekstra yok',
-                    decoration: 'underline',
-                    decorationStyle: 'dotted',
-                    italics: true,
-                    style: 'mt10'
-                  }
-                ]
-              })
-            }
-          }
+      //       if (this.addedServices.length === 0) {
+      //         contentArray.push({
+      //           columns: [
+      //             {
+      //               width: 130,
+      //               text: 'Ekstralar: ',
+      //               style: 'mt10'
+      //             },
+      //             {
+      //               width: '*',
+      //               text: 'Ekstra yok',
+      //               decoration: 'underline',
+      //               decorationStyle: 'dotted',
+      //               italics: true,
+      //               style: 'mt10'
+      //             }
+      //           ]
+      //         })
+      //       }
+      //     }
 
-          if (field.identifier === 'total_cost') {
-            contentArray.push({
-              columns: [
-                {
-                  width: 130,
-                  text: this.language === 'tr' ? field.name_tr + ':' : field.name_en + ':',
-                  style: 'mt10'
-                },
-                {
-                  width: '*',
-                  text: this.totalCost + ' ₺',
-                  decoration: 'underline',
-                  decorationStyle: 'dotted',
-                  style: 'mt10'
-                }
-              ]
-            })
-          }
-        }
+      //     if (field.identifier === 'total_cost') {
+      //       contentArray.push({
+      //         columns: [
+      //           {
+      //             width: 130,
+      //             text: this.language === 'tr' ? field.name_tr + ':' : field.name_en + ':',
+      //             style: 'mt10'
+      //           },
+      //           {
+      //             width: '*',
+      //             text: this.totalCost + ' ₺',
+      //             decoration: 'underline',
+      //             decorationStyle: 'dotted',
+      //             style: 'mt10'
+      //           }
+      //         ]
+      //       })
+      //     }
+      //   }
 
-        offer.content.push({
-          style: 'tableExample',
-          table: {
-            widths: [500],
-            body: [
-              [
-                contentArray
-              ]
-            ]
-          },
-          layout: {
-            hLineColor: function () {
-              return '#555'
-            },
-            vLineColor: function () {
-              return '#555'
-            },
-            paddingLeft: function () { return 15 },
-            paddingRight: function () { return 10 },
-            paddingTop: function () { return 10 },
-            paddingBottom: function () { return 10 },
-          }
-        })
+      //   offer.content.push({
+      //     style: 'tableExample',
+      //     table: {
+      //       widths: [500],
+      //       body: [
+      //         [
+      //           contentArray
+      //         ]
+      //       ]
+      //     },
+      //     layout: {
+      //       hLineColor: function () {
+      //         return '#555'
+      //       },
+      //       vLineColor: function () {
+      //         return '#555'
+      //       },
+      //       paddingLeft: function () { return 15 },
+      //       paddingRight: function () { return 10 },
+      //       paddingTop: function () { return 10 },
+      //       paddingBottom: function () { return 10 },
+      //     }
+      //   })
 
-        if (this.currentProperty.contract.text) {
-          offer.content.push({
-            style: 'tableExample',
-            table: {
-              widths: [500],
-              body: [
-                [
-                  {text: this.currentProperty.contract.text}
-                ]
-              ]
-            },
-            layout: {
-              hLineColor: function () {
-                return '#555'
-              },
-              vLineColor: function () {
-                return '#555'
-              },
-              paddingLeft: function () { return 15 },
-              paddingRight: function () { return 10 },
-              paddingTop: function () { return 10 },
-              paddingBottom: function () { return 10 },
-            }
-          })
-        }
+      //   if (this.currentProperty.contract.text) {
+      //     offer.content.push({
+      //       style: 'tableExample',
+      //       table: {
+      //         widths: [500],
+      //         body: [
+      //           [
+      //             {text: this.currentProperty.contract.text}
+      //           ]
+      //         ]
+      //       },
+      //       layout: {
+      //         hLineColor: function () {
+      //           return '#555'
+      //         },
+      //         vLineColor: function () {
+      //           return '#555'
+      //         },
+      //         paddingLeft: function () { return 15 },
+      //         paddingRight: function () { return 10 },
+      //         paddingTop: function () { return 10 },
+      //         paddingBottom: function () { return 10 },
+      //       }
+      //     })
+      //   }
 
-        pdfMake.createPdf(offer).download('teklif - ' + this.clientFullName + '.pdf')
-        const pdfOffer = pdfMake.createPdf(offer)
-        pdfOffer.getBase64((base64) => {
-          var formData = new FormData()
-          formData.append('price', price)
-          formData.append('user_id', this.user.id)
-          formData.append('client_id', this.clientId)
-          formData.append('date', this.date)
-          formData.append('type', this.dayPeriod)
-          formData.append('property_id', this.currentProperty.id)
-          formData.append('total_cost', this.totalCost)
-          formData.append('added_services', JSON.stringify(this.addedServices))
-          formData.append('total_guests', this.totalGuests)
-          formData.append('hour_start', this.timeStart.HH)
-          formData.append('minute_start', this.timeStart.mm)
-          formData.append('hour_end', this.timeEnd.HH)
-          formData.append('minute_end', this.timeEnd.mm)
-          formData.append('base64', encodeURI(base64))
+      //   pdfMake.createPdf(offer).download('teklif - ' + this.clientFullName + '.pdf')
+      //   const pdfOffer = pdfMake.createPdf(offer)
+      //   pdfOffer.getBase64((base64) => {
+      //     var formData = new FormData()
+      //     formData.append('price', price)
+      //     formData.append('user_id', this.user.id)
+      //     formData.append('client_id', this.clientId)
+      //     formData.append('date', this.date)
+      //     formData.append('type', this.dayPeriod)
+      //     formData.append('property_id', this.currentProperty.id)
+      //     formData.append('total_cost', this.totalCost)
+      //     formData.append('added_services', JSON.stringify(this.addedServices))
+      //     formData.append('total_guests', this.totalGuests)
+      //     formData.append('hour_start', this.timeStart.HH)
+      //     formData.append('minute_start', this.timeStart.mm)
+      //     formData.append('hour_end', this.timeEnd.HH)
+      //     formData.append('minute_end', this.timeEnd.mm)
+      //     formData.append('base64', encodeURI(base64))
 
-          this.$http.post(this.appApiPath + '/api/offer_add', formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
-          }).then(response => {
-            console.log('success response from offer_add')
-            console.log(response.body)
-          }, response => {
-            console.log('error from offer_add')
-            console.log(response)
-          })
-        })
-      },
+      //     this.$http.post(this.appApiPath + '/api/offer_add', formData, {
+      //       headers: {
+      //         'Content-Type': 'multipart/form-data'
+      //       }
+      //     }).then(response => {
+      //       console.log('success response from offer_add')
+      //       console.log(response.body)
+      //     }, response => {
+      //       console.log('error from offer_add')
+      //       console.log(response)
+      //     })
+      //   })
+      // },
       offerListPrint() {
         let listPDF = {
           footer: [
@@ -3870,7 +3856,7 @@
                   text: [
                     {text: this.serviceListScoped[i].name + '\n', bold: true, color: '#49c4ed'},
                     {text: this.serviceListScoped[i].description + '\n', color: '#555', fontSize: 10},
-                    {text: 'Fiyat: ' + offer.price + '₺ + ' + service.cost + '₺ = ' + (offer.price + service.cost) + '₺', color: '#555'}
+                    {text: 'Fiyat: ' + offer.price + '₺ + ' + service.totalCost + '₺ = ' + (offer.price + service.totalCost) + '₺', color: '#555'}
                   ],
                   margin: [ 0, 0, 0, 3 ]
                 })
@@ -3878,7 +3864,7 @@
                 listPDF.content.push({
                   text: [
                     {text: this.serviceListScoped[i].name + '\n', bold: true, color: '#49c4ed'},
-                    {text: 'Fiyat:' + offer.price + '₺ + ' + service.cost + '₺ = ' + (offer.price + service.cost) + '₺', color: '#555'}
+                    {text: 'Fiyat:' + offer.price + '₺ + ' + service.totalCost + '₺ = ' + (offer.price + service.totalCost) + '₺', color: '#555'}
                   ],
                   margin: [ 0, 0, 0, 3 ]
                 })
