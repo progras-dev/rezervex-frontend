@@ -654,6 +654,7 @@ var translation = {
     companyTitle: 'Company Title',
     brandTitle: 'Brand Title',
     taxOffice: 'Tax Office',
+    customFields: 'Custom Fields',
   },
   tr: {
     // General
@@ -1313,8 +1314,9 @@ var translation = {
     switchToPlan: 'Planı değiştir',
     currentPlan: 'Mevcut Plan',
     companyTitle: 'Company Title', // Change also in labels
-    brandTitle: 'Brand Title',
-    taxOffice: 'Tax Office',
+    brandTitle: 'Brand Title', // Change also in labels
+    taxOffice: 'Tax Office', // Change also in labels
+    customFields: 'Custom Fields', // Change also in labels
   }
 }
 

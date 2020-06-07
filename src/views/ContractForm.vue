@@ -80,7 +80,7 @@
               </div>
             </div>
 
-            <div class="form-group" style="margin-top: 30px;">
+            <div class="form-group mt3">
               <label for="inputManagers"><span v-lang.fields></span></label>
               <select multiple class="form-control" id="inputManagers" v-model="selectedFields" style="min-height: 150px;">
                 <option v-for="(field, index) in contractFieldsScoped" :key="index" :value="field" selected>
@@ -92,23 +92,26 @@
             </div>
 
 
-            <!--<div class="mt25" style="width: 25%;">
-              <button type="submit" class="btn btn-info btn-block white" @click="fieldAdd($event)">
-                <i class="fa fa-plus-circle"></i>
-                <span v-lang.fieldAdd></span>
-              </button>
+            <div class="form-group">
+              <label for="inputCopyright"><span v-lang.customFields></span></label>
+              <div class="input-group">
+                <span class="input-group-addon mt3"><i class="fa fa-2x fa-file-text iconColor"></i></span>
+                <input type="text" class="form-control" id="customFields" :placeholder="labelCustomFields" v-model="currentField">
+                <button type="submit" class="btn btn-info white" @click="addCustomField($event)">
+                  <i class="fa fa-plus-circle"></i>
+                  <span v-lang.fieldAdd></span>
+                </button>
+              </div>
+            </div>
 
-              <div style="margin-top: 15px;">
-                <p class="card-text lead"  v-for="(field, index) in addedFields">
-                  <i class="fa fa-trash-o text-danger fieldRemoveIcon" @click="fieldRemove(field, index)" data-toggle="tooltip" data-placement="top" title="Remove field"></i>
-                  <span v-if="language === 'tr'"> {{ field.name_tr }} </span>
-                  <span v-if="language === 'en'"> {{ field.name_en }} </span>
+            <div class="mt20">
+                <p class="card-text lead"  v-for="(field, index) in customFields" :key="index">
+                  <i class="fa fa-trash text-danger fieldRemoveIcon" @click="removeCustomField(field, index)" data-toggle="tooltip" data-placement="top" title="Remove field"></i>
+                  {{ field }}
                 </p>
               </div>
-            </div>-->
 
-
-            <div class="form-group" style="margin-top: 40px;">
+            <div class="form-group mt25">
               <label for="inputText"><span v-lang.text></span></label>
               <div class="input-group">
                 <span class="input-group-addon mt3"><i class="fa fa-2x fa-edit iconColor"></i></span>
@@ -179,8 +182,6 @@
         },
         contractFieldsScoped: [],
         selectedFields: [],
-        currentField: {},
-        addedFields: [],
         showSpinner: false,
         formSubmitted: false,
         imagesToUpload: [],
@@ -195,10 +196,11 @@
           maxFiles: 1,
           maxFilesize: 10,
         },
-        hasImage: false
+        hasImage: false,
+        customFields: [],
+        currentField: '',
       }
     },
-
     validations: {
       title: {
         required
@@ -207,7 +209,6 @@
         required
       }
     },
-
     computed: {
       language () {
         return store.getters.getLanguage
@@ -228,26 +229,27 @@
         return store.getters.getUser
       },
     },
-
     created() {
       this.$language = this.language
       for (let i = 0; i < this.contractFields.length; i++) {
         let contractFields = {...this.contractFields[i]}
         this.contractFieldsScoped.push(contractFields)
       }
-      console.log('currentContract')
-      console.log(this.currentContract)
-      console.log('contractFieldsScoped')
-      console.log(this.contractFieldsScoped)
-      this.currentField = {...this.contractFieldsScoped[0]}
       this.initDropzoneLabels()
 
       if (this.contractFormType === 'edit') {
         this.initEditing()
       }
     },
-
     methods: {
+      addCustomField(event) {
+        event.preventDefault()
+        this.customFields.push(this.currentField)
+        this.currentField = ''
+      },
+      removeCustomField(field) {
+        this.customFields = this.customFields.filter(item => item !== field)
+      },
       initDropzoneLabels() {
         if (this.$language === 'tr') {
           this.dzOptions.dictDefaultMessage = '<i class="fa fa-cloud-upload-alt"></i> Resimleri buraya bırak'
@@ -262,6 +264,7 @@
         this.contractData.text = this.currentContract.text
         this.contractData.copyright = this.currentContract.copyright
         this.contractData.base64 = this.currentContract.base64
+        this.customFields = this.currentContract.custom_fields.map(field => field.name)
 
         for (let i = 0; i < this.currentContract.fields.length; i++) {
           for (let j = 0; j < this.contractFieldsScoped.length; j++) {
@@ -289,22 +292,6 @@
           }, 100)
         }
       },
-      fieldAdd(event) {
-        event.preventDefault()
-        if (this.contractFieldsScoped.length > 0) {
-          if (this.currentField) {
-            let currentField = {...this.currentField}
-            this.addedFields.push(currentField)
-
-            let index = this.contractFieldsScoped.indexOf(this.currentField)
-            if (index > -1) {
-              this.contractFieldsScoped.splice(index, 1)
-              this.currentField = {...this.contractFieldsScoped[0]}
-            }
-          }
-        }
-        this.addedFields.sort(this.sortArray)
-      },
       sortArray(a, b) {
         if (a.id < b.id) {
           return -1
@@ -313,14 +300,6 @@
           return 1
         }
         return 0
-      },
-      fieldRemove(field, index) {
-        console.log(index)
-
-        if (index > -1) {
-          this.addedFields.splice(index, 1)
-          this.contractFieldsScoped.push(field)
-        }
       },
       imageAdded(file) {
         console.log({file})
@@ -404,6 +383,7 @@
           formData.append('text', this.contractData.text)
           formData.append('copyright', this.contractData.copyright)
           formData.append('fields', JSON.stringify(this.selectedFields))
+          formData.append('custom_fields', JSON.stringify(this.customFields))
 
           if (this.contractFormType === 'add') {
             formData.append('has_image', this.hasImage)
@@ -520,14 +500,6 @@
 
   .btn i {
     margin-right: 5px;
-  }
-
-  .fieldRemoveIcon {
-    color: crimson;
-  }
-
-  .fieldRemoveIcon:hover {
-    pointer: cursor;
   }
 
   .md-helper-text {

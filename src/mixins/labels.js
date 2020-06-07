@@ -40,6 +40,7 @@ export const labels = {
       labelCompanyTitle: '',
       labelBrandTitle: '',
       labelTaxOffice: '',
+      labelCustomFields: '',
     }
   },
   created: function () {
@@ -93,6 +94,7 @@ export const labels = {
         this.labelCompanyTitle = 'Company Title'
         this.labelBrandTitle = 'Brand Title'
         this.labelTaxOffice = 'Tax Office'
+        this.labelCustomFields = 'Custom Fields'
       } else if (this.language === 'tr') {
         this.labelName = 'Adı'
         this.labelFirstName = 'Adı'
@@ -139,6 +141,7 @@ export const labels = {
         this.labelCompanyTitle = 'Company Title'
         this.labelBrandTitle = 'Brand Title'
         this.labelTaxOffice = 'Tax Office'
+        this.labelCustomFields = 'Custom Fields'
       }
     }
   }

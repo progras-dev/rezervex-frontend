@@ -49,42 +49,16 @@
           <div class="card">
             <div class="card-block">
               <div class="h1 text-muted text-right mb-2">
-                <i class="fa fa-building"></i>
+                <i class="fa fa-image"></i>
               </div>
-
-              <div class="h3 text-success"><span v-lang.properties></span></div>
-
-              <div>
-                <p class="card-text normalText200" v-for="(property, index) in contractPropertiesScoped" :key="index"> {{ property.name }} </p>
-              </div>
-
-              <div style="margin-top: 15px">
-                <button type="submit" class="btn btn-info btn-block white" @click="openPropertiesModal()">
-                  <i class="fa fa-plus-circle"></i>
-                  <span v-lang.assignProperties></span>
-                </button>
-              </div>
-
+              <div class="h3 text-success"><span v-lang.image></span></div>
+              <img v-if="currentContract.image_name" :src="appApiPath + currentContract.image_path" alt="">
             </div>
           </div>
         </div>
       </div>
 
       <div class="row">
-        <div class="col-sm-6">
-          <div class="card">
-            <div class="card-block">
-              <div class="h1 text-muted text-right mb-2">
-                <i class="fa fa-image"></i>
-              </div>
-
-              <div class="h3 text-success"><span v-lang.image></span></div>
-
-              <img v-if="currentContract.image_name" :src="appApiPath + currentContract.image_path" alt="">
-
-            </div>
-          </div>
-        </div>
         <div class="col-sm-6">
           <div class="card">
             <div class="card-block">
@@ -96,6 +70,21 @@
                 <p class="card-text lead"  v-for="(field, index) in currentContract.fields" :key="index">
                   <span v-if="language === 'tr'"> {{ field.name_tr }} </span>
                   <span v-if="language === 'en'"> {{ field.name_en }} </span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="card">
+            <div class="card-block">
+              <div class="h1 text-muted text-right mb-2">
+                <i class="fa fa-list"></i>
+              </div>
+              <div class="h3 text-success"><span v-lang.customFields></span></div>
+              <div>
+                <p class="card-text lead"  v-for="(customField, index) in currentContract.custom_fields" :key="index">
+                  <span> {{ customField.name }} </span>
                 </p>
               </div>
             </div>
@@ -289,6 +278,7 @@
             copyright: this.currentContract.copyright,
             text: this.currentContract.text,
             fieldsArray: this.currentContract.fields,
+            customFieldsArray: this.currentContract.custom_fields,
             logo: this.currentContract.base64,
           },
           clientData: {

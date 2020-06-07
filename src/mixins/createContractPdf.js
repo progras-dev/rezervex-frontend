@@ -615,6 +615,27 @@ export const createContractPdf = {
         }
       }
 
+      if (contractInfo.customFieldsArray) {
+        for (let i = 0; i < contractInfo.customFieldsArray.length; i++) {
+          const customField = {...contractInfo.customFieldsArray[i]}
+
+          contentArray.push({columns: [
+            {
+              width: 130,
+              text: customField.name + ':',
+              margin: [0, 10, 0, 0]
+            },
+            {
+              width: '*',
+              text: '                  ',
+              decoration: 'underline',
+              decorationStyle: 'dotted',
+              margin: [0, 10, 0, 0]
+            }
+          ]})
+        }
+      }
+
       contract.content.push({
         style: 'contractFields',
         table: {
