@@ -216,15 +216,6 @@
                 </div>
               </div>
 
-
-              <div class="alert alert-danger" role="alert" v-if="!currentProperty.contract_id">
-                <i class="fa fa-warning"></i>
-                <span v-lang.noContractAssigned></span>
-              </div>
-
-
-              <!--<label style="margin-bottom: 5px"><span v-lang.selectTotalGuests></span></label>-->
-
               <div class="form-group">
                 <label for="inputTotalGuests"><span v-lang.totalGuests></span></label>
                 <div class="input-group">
@@ -623,12 +614,6 @@
                 </div>
               </div>
 
-
-              <div class="alert alert-danger" role="alert" v-if="!currentProperty.contract_id">
-                <i class="fa fa-warning"></i>
-                <span v-lang.noContractAssigned></span>
-              </div>
-
               <div class="form-group">
                 <label><span v-lang.totalGuests></span></label>
                 <div class="input-group">
@@ -871,7 +856,12 @@
                 </div>
               </div>
 
-              <div class="form-group">
+              <div>
+                <label for="contract"><span v-lang.contract></span></label>
+                <v-select id="contract" placeholder="Select a contract" v-model="selectedContract" :options="contractListFormatted" @input="contractSelected"></v-select>
+              </div>
+
+              <div class="form-group mt20">
                 <label for="paymentNotes"><span v-lang.paymentNotes></span></label>
                 <div class="input-group">
                   <span class="input-group-addon mt3"><i class="fa fa-2x fa-edit iconColor"></i></span>
@@ -1020,10 +1010,10 @@
   import VueTimepicker from 'vue2-timepicker'
   import { VTooltip } from 'v-tooltip'
   import moment from 'moment'
-  import vSelect from 'vue-select'
   import pdfMake from 'pdfmake/build/pdfmake'
   import pdfFonts from 'pdfmake/build/vfs_fonts'
   import { mask } from 'vue-the-mask'
+  import vSelect from 'vue-select'
 
   import WrittenNumber from 'written-number'
   import { labels } from '../mixins/labels'
@@ -1037,7 +1027,7 @@
     '<div class="tooltipCustom" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
 
   export default {
-    components: { Calendar, Icon, FormWizard, TabContent, VueTimepicker, vSelect },
+    components: { Calendar, Icon, FormWizard, TabContent, VueTimepicker, 'v-select': vSelect },
     directives: { tooltip: VTooltip, mask },
     router: router,
     mixins: [labels, updateBookingLists, setupDefaultPrices, savePropertiesInStorage, initReservations, createContractPdf],
@@ -1133,7 +1123,9 @@
         stepIndex: 0,
         isReserved: false,
         selectedClient: null,
+        selectedContract: null,
         clientListFormatted: [],
+        contractListFormatted: [],
         saveNewClient: true,
         clientReservedDate: '',
         clientReservation: {},
@@ -1165,6 +1157,9 @@
       },
       bookings() {
         return store.getters.getBookings
+      },
+      contracts() {
+        return store.getters.getContracts
       },
       bookingListIndexed() {
         return store.getters.getBookingListIndexed
@@ -1286,6 +1281,7 @@
       this.initPropertiesFormatted()
       this.initServices()
       this.initClients()
+      this.initContracts()
       this.getImages()
     },
     mounted() {
@@ -1353,6 +1349,10 @@
             }
           }
         }
+      },
+      contractSelected(contract) {
+        console.warn('contractSelected')
+        console.log({contract})
       },
       routeParamsCheck() {
         let continueReservation = this.$route.params.continueReservation
@@ -1592,6 +1592,15 @@
           client.value = this.clients[i].id
           client.label = this.clients[i].full_name
           this.clientListFormatted.push(client)
+        }
+      },
+      initContracts() {
+        this.contractListFormatted = []
+        for (let i = 0; i < this.contracts.length; i++) {
+          let contract = {}
+          contract.value = this.contracts[i].id
+          contract.label = this.contracts[i].name
+          this.contractListFormatted.push(contract)
         }
       },
       getDaysBusy() {
@@ -3074,10 +3083,6 @@
         }
       },
       validateTabOffer() {
-        if (!this.currentProperty.contract_id) {
-          return false
-        }
-
         // Reset days selected unless is only day selected
         if (this.daysSelected.length > 1) {
           this.daysSelected = []
@@ -3110,10 +3115,6 @@
           console.log(item)
           return item
         })
-        if (!this.currentProperty.contract_id) {
-          // If property has no contract assigned
-          return false
-        }
         if (!this.isDaySelected) {
           if (this.$language === 'en') {
             this.$toasted.show('Please, select a date', {icon: 'fa-exclamation-triangle', type: 'error'})
