@@ -23,17 +23,6 @@
           </div>
 
           <form>
-            <div v-if="showWarningNoContracts" class="alert alert-warning" role="alert">
-              <div class="row">
-                <div class="col-1">
-                  <i class="fa fa-bell fa-2x"></i> 
-                </div>
-                <div class="col-11">
-                  <span v-lang.noContractsInTheSystem></span>
-                </div>
-              </div>
-            </div>
-
             <div class="form-group">
               <label for="inputName"><span v-lang.propertyName></span></label>
               <div class="input-group">
@@ -735,32 +724,11 @@
               </div>
             </div>
 
-
-            <div class="mt25" style="width: 33%">
-              <span class="formSubtitle"><span v-lang.contract></span></span>
-
-              <p class="card-text normalText200" v-if="!propertyData.contract_id || !propertyData.contract"> <span v-lang.noContracts></span></p>
-              <p class="card-text normalText200 text-success" v-if="propertyData.contract_id && propertyData.contract"> {{ propertyData.contract.name }}</p>
-
-              <button v-if="!propertyData.contract_id" type="submit" class="btn btn-info btn-block white" @click="openContractModal($event)">
-                <i class="fa fa-plus-circle"></i>
-                <span v-lang.assignContract></span>
-              </button>
-
-              <button v-if="propertyData.contract_id" type="submit" class="btn btn-info btn-block white" @click="openContractModal($event)">
-                <i class="fa fa-edit"></i>
-                <span v-lang.updateContract></span>
-              </button>
-
-            </div>
-
-
             <span class="formSubtitle"><span v-lang.invoice></span></span>
             <div class="form-check">
               <input id="inputInvoice" class="form-check-input" v-model="propertyData.has_invoice" type="checkbox" value="">
               <label for="inputInvoice"><span v-lang.invoceRequired></span></label>
             </div>
-
 
             <div class="form-group row mt25">
               <div class="col-sm-3">
@@ -783,27 +751,6 @@
 
       </div>
     </div>
-
-
-    <b-modal ref="modalAssignContract" class="modal-info">
-      <template slot="modal-header">
-        <h5 class="modal-title"><span v-lang.assignContract></span></h5>
-      </template>
-      <span v-lang.assignContractInfo></span>
-
-      <v-select v-model="contractSelected" :options="contractsFormatted"></v-select>
-
-      <template slot="modal-footer">
-        <b-btn variant="default" @click="$refs.modalAssignContract.hide()">
-          <span v-lang.close></span>
-        </b-btn>
-        <b-btn variant="success" class="white" @click="contractAssign($event)">
-          <span v-lang.assign></span>
-        </b-btn>
-      </template>
-    </b-modal>
-
-
   </div>
 </template>
 
@@ -825,11 +772,11 @@
   import { labels } from '../mixins/labels'
   import { savePropertiesInStorage } from '../mixins/savePropertiesInStorage'
   import { saveCurrentPropertyInStorage } from '../mixins/saveCurrentPropertyInStorage'
-  import { saveContractsInStorage } from '../mixins/saveContractsInStorage'
+
 
   export default {
     components: { MapAutocomplete, vueDropzone: vue2Dropzone, Icon, vSelect },
-    mixins: [labels, savePropertiesInStorage, saveCurrentPropertyInStorage, saveContractsInStorage],
+    mixins: [labels, savePropertiesInStorage, saveCurrentPropertyInStorage],
     data() {
       return {
         propertyData: {
@@ -840,7 +787,6 @@
           address: '',
           lat: '',
           lng: '',
-          contract_id: '',
           has_invoice: false,
         },
         selectedManagers: [],
@@ -849,8 +795,6 @@
         showSpinner: false,
         name: '',
         formSent: false,
-        contractsFormatted: [],
-        contractSelected: {},
         dzOptions: {
           url: 'https://httpbin.org/post',
           thumbnailWidth: 150,
@@ -913,7 +857,6 @@
         defaultPriceLowSeasonSundayNightNextYear: '',
         yearCurrent: '',
         yearNext: '',
-        showWarningNoContracts: false,
       }
     },
 
@@ -995,16 +938,11 @@
       user() {
         return store.getters.getUser
       },
-      contracts() {
-        return store.getters.getContracts
-      },
     },
 
     created() {
       this.$language = this.language
       this.initDropzoneLabels()
-      this.initContracts()
-      this.initContractSelected()
       this.initManagers()
       if (this.propertyFormType === 'edit') {
         this.initEditing()
@@ -1018,26 +956,6 @@
       initYears() {
         this.yearCurrent = moment().year()
         this.yearNext = moment().add(1, 'year').year()
-      },
-      initContracts() {
-        if (this.contracts.length === 0) {
-          this.showWarningNoContracts = true
-        } else {
-          for (let i = 0; i < this.contracts.length; i++) {
-            let contract = {}
-            contract.value = this.contracts[i].id
-            contract.label = this.contracts[i].name
-            this.contractsFormatted.push(contract)
-          }
-        }
-      },
-      initContractSelected() {
-        if (this.property.contract_id && this.property.contract) {
-          this.contractSelected.value = this.property.contract_id
-          this.contractSelected.label = this.property.contract.name
-        } else {
-          this.contractSelected = this.contractsFormatted[0]
-        }
       },
       initDropzoneLabels() {
         if (this.$language === 'tr') {
@@ -1309,7 +1227,6 @@
           formData.append('lng', this.propertyData.lng)
           formData.append('images', JSON.stringify(this.propertyImages))
           formData.append('user_id', this.user.id)
-          formData.append('contract_id', this.propertyData.contract_id)
           // Current year default prices
           formData.append('default_price_high_season_working_days_day_current_year', this.defaultPriceHighSeasonWorkingDaysDayCurrentYear)
           formData.append('default_price_high_season_friday_day_current_year', this.defaultPriceHighSeasonFridayDayCurrentYear)
@@ -1555,78 +1472,6 @@
               console.log(response)
 
               this.showSpinner = false
-            })
-        }
-      },
-      openContractModal(event) {
-        event.preventDefault()
-        this.$refs.modalAssignContract.show()
-      },
-      contractAssign(event) {
-        event.preventDefault()
-        this.$refs.modalAssignContract.hide()
-        console.log('assigning contract')
-        console.log(this.contractSelected)
-        let contract = {}
-        for (let i = 0; i < this.contracts.length; i++) {
-          if (this.contractSelected.value === this.contracts[i].id) {
-            contract = this.contracts[i]
-          }
-        }
-
-        if (this.propertyFormType === 'add') {
-          this.propertyData.contract_id = contract.id
-          this.propertyData.contract = contract
-        } else if (this.propertyFormType === 'edit') {
-          let formData = new FormData()
-          formData.append('property_id', this.property.id)
-          formData.append('contract_id', contract.id)
-          formData.append('user_id', this.user.id)
-          this.$http.post(this.appApiPath + '/api/property_contract_save', formData)
-            .then(response => {
-              console.log('success response from property_contract_save')
-              console.log(response.body)
-
-              // Update contracts
-              store.dispatch({
-                type: 'setAppContracts',
-                contracts: response.body.data.contracts
-              })
-              this.saveContractsInStorage(response.body.data.contracts)
-              // Update properties
-              let properties = response.body.data.properties
-              store.dispatch({
-                type: 'setAppProperties',
-                properties: properties
-              })
-              this.savePropertiesInStorage(properties, 'admin')
-              // Update current property
-              for (let i = 0; i < properties.length; i++) {
-                if (properties[i].id === this.property.id) {
-                  this.propertyData = properties[i]
-                  store.dispatch({
-                    type: 'setAppCurrentProperty',
-                    currentProperty: properties[i]
-                  })
-                  this.saveCurrentPropertyInStorage(properties[i])
-                }
-              }
-              // Display toast
-              if (response.body.data.result) {
-                if (this.$language === 'en') {
-                  this.$toasted.show('Contract successfully assigned to the property!', {icon: 'fa-check-circle', type: 'success'})
-                } else if (this.$language === 'tr') {
-                  this.$toasted.show('Contract successfully assigned to the property!', {icon: 'fa-check-circle', type: 'success'})
-                }
-              }
-            }, response => {
-              console.warn('error from property_contract_save')
-              console.log(response)
-              if (this.$language === 'en') {
-                this.$toasted.show('Something went wrong', {icon: 'fa-exclamation-triangle', type: 'error'})
-              } else if (this.$language === 'tr') {
-                this.$toasted.show('Bir hata oluştu', {icon: 'fa-exclamation-triangle', type: 'error'})
-              }
             })
         }
       },
