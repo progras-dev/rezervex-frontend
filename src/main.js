@@ -19,6 +19,7 @@ import WrittenNumber from 'written-number'
 
 import './assets/css/custom.css'
 import './assets/css/material2.css'
+import 'vue-select/dist/vue-select.css';
 
 import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.min.css'

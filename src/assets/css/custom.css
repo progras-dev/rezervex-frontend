@@ -139,6 +139,9 @@ a:not(.md-button):hover {
   content: none !important;
 }
 
+.vs__search {
+  color: #9faecb !important;
+}
 
 
 
