@@ -2207,7 +2207,7 @@
           }
         }
 
-        if (!this.discountTooMuch && !this.discountTooMuchPercentage) {
+        if (!this.discountTooMuch && !this.discountTooMuchPercentage && this.totalDiscount > 0) {
           this.hasDiscount = true
           this.newPrice = this.currentPrice - this.totalDiscount
           this.calculateTotalCost()
