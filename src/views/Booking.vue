@@ -1275,8 +1275,6 @@
       this.isEditingExistingBooking = this.$route.params.editing
       this.addedServices = []
 
-      console.log('serviceList', this.serviceList)
-
       this.initAlertMessages()
       this.initDates()
       this.initPropertiesFormatted()
@@ -1434,7 +1432,6 @@
         }
       },
       initReservation(reservation) {
-        console.log({reservation})
         this.reservationId = reservation.id
 
         // Load client data
@@ -1474,7 +1471,6 @@
             this.currentProperty = {...this.properties[i]}
           }
         }
-        console.log('currentProperty', this.currentProperty)
         this.currentPropertyId = reservation.property.id
 
         this.$refs.wizardBooking.setSingleDateAndUpdate(dateFull)
@@ -1832,8 +1828,6 @@
         this.calculateTotalCost()
       },
       generateOffers() {
-        console.warn('generateOffers')
-        console.log('serviceListScoped', this.serviceListScoped)
         // Reset offer list
         this.offerList = []
 
@@ -1888,12 +1882,10 @@
         }
       },
       calculateServicesCost(services) {
-        console.warn('calculateServicesCost')
         let servicesTotalCost = 0
 
         for (let i = 0; i < services.length; i++) {
           let service = {...services[i]}
-          console.log({service})
 
           if (service.type === 'fixed') {
             servicesTotalCost += service.cost
@@ -2057,7 +2049,6 @@
             }, 200)
           }
         }
-        console.log('daysSelected', this.daysSelected)
       },
       skipOffer() {
         // Loading the events data of the current month to fix bug of calendar without prices
@@ -2366,7 +2357,6 @@
         }
       },
       submitBookingAPI(price, base64 = null) {
-        console.warn('submitBookingAPI')
         const servicesJson = JSON.stringify(this.addedServices)
         let formData = new FormData()
         formData.append('price', price)
@@ -2989,8 +2979,6 @@
         }
       },
       serviceEdit(service) {
-        console.log('serviceEdit')
-        console.log({service})
         this.showSpinnerServiceUpdatedSuccess = false
         if (this.currentServiceToEdit.id === service.id || !this.currentServiceToEdit) {
           this.isServiceEdit = !this.isServiceEdit
@@ -3012,9 +3000,6 @@
         }
       },
       serviceUpdate(type = '') {
-        console.log('serviceUpdate')
-        console.log({type})
-        console.log('currentServiceToEdit', this.currentServiceToEdit)
         this.showSpinnerServiceEdit = true
         for (let i = 0; i < this.addedServices.length; i++) {
           let service = JSON.parse(JSON.stringify(this.addedServices[i])) // deep clone - avoid bug with changes in nested object range_costs 
@@ -3045,7 +3030,6 @@
                 service.range_costs[service.range_costs.length - 1].cost = service.cost
               }
             }
-            console.log({service})
             service.edited = true
             this.addedServices[i] = service;
           }
@@ -3146,9 +3130,7 @@
         } */
       },
       validateTabBookingData() {
-        console.log('addedServices', this.addedServices)
         this.addedServices.forEach(item => {
-          console.log(item)
           return item
         })
         if (!this.isDaySelected) {
