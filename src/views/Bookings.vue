@@ -53,7 +53,7 @@
             </template>
 
             <template v-slot:cell(contract)="item">
-              <b-button variant="outline-success" @click="downloadContract(item.item)">
+              <b-button variant="outline-success" @click="downloadContract(item.item)" v-if="item.item.has_contract">
                 <i class="fa fa-download"></i>
               </b-button>
             </template>
