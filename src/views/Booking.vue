@@ -12,7 +12,7 @@
       </div>
     </div>
 
-    <form-wizard title="" subtitle="" color="#79C447" @on-complete="submitBooking" @on-change="updateTab" ref="wizard" :start-index.sync="stepIndex">
+    <form-wizard title="" subtitle="" color="#79C447" @on-complete="prepareBookingToSubmit" @on-change="updateTab" ref="wizard" :start-index.sync="stepIndex">
 
       <button class="btn btn-success white confirmButton" slot="finish">
         <i v-if="!showSpinner" class="fa fa-check-square buttonIcon"></i>
@@ -1124,6 +1124,7 @@
         isReserved: false,
         selectedClient: null,
         selectedContract: null,
+        useContract: false,
         clientListFormatted: [],
         contractListFormatted: [],
         saveNewClient: true,
@@ -1351,8 +1352,11 @@
         }
       },
       contractSelected(contract) {
-        console.warn('contractSelected')
-        console.log({contract})
+        if (contract.value !== 0) {
+          this.useContract = true
+        } else {
+          this.useContract = false
+        }
       },
       routeParamsCheck() {
         let continueReservation = this.$route.params.continueReservation
@@ -1596,6 +1600,18 @@
       },
       initContracts() {
         this.contractListFormatted = []
+
+        // Add option for no contract
+        let noContract = {}
+        if (this.$language === 'en') {
+          noContract.value = 0
+          noContract.label = 'No contract'
+        } else if (this.$language === 'tr') {
+          noContract.value = 0
+          noContract.label = 'Hiçbir sözleşme'
+        }
+        this.contractListFormatted.push(noContract)
+
         for (let i = 0; i < this.contracts.length; i++) {
           let contract = {...this.contracts[i]}
           contract.value = this.contracts[i].id
@@ -2284,7 +2300,7 @@
           this.newPrice = this.currentPrice - this.totalDiscount
         }
       },
-      submitBooking() {
+      prepareBookingToSubmit() {
         this.formSubmitted = true
         this.showSpinner = true
 
@@ -2295,169 +2311,188 @@
           price = this.currentPrice
         }
 
-        let propertyCounter =  '00000' + (this.currentProperty.invoice_counter + 1)
-        let contractFilename = propertyCounter.slice(-5)
+        // Print contract
+        if (this.useContract) {
+          let propertyCounter =  '00000' + (this.currentProperty.invoice_counter + 1)
+          let contractFilename = propertyCounter.slice(-5)
 
-        let contractData = {
-          invoiceCounter: this.currentProperty.invoice_counter + 1,
-          propertyName: this.currentProperty.name,
-          user: this.user,
-          // CHANGE CONTRACT
-          contractInfo: {
-            title: this.selectedContract.title,
-            subtitle: this.selectedContract.subtitle,
-            copyright: this.selectedContract.copyright,
-            text: this.selectedContract.text,
-            fieldsArray: this.selectedContract.fields,
-            logo: this.selectedContract.base64,
-          },
-          clientData: {
-            clientFullName: this.clientFullName,
-            clientPhone: this.clientPhone,
-            clientEmail: this.clientEmail,
-            groomRegion: this.groomRegion,
-            groomPhone: this.groomPhone,
-            groomEmail: this.groomEmail,
-            groomFullName: this.groomFullName,
-            brideFullName: this.brideFullName,
-            brideRegion: this.brideRegion,
-            bridePhone: this.bridePhone,
-            brideEmail: this.brideEmail,
-          },
-          bookingData: {
-            totalCost: this.totalCost,
-            advance: this.advance,
-            notes: this.notes,
-            addedServices: this.addedServices,
-            totalGuests: this.totalGuests,
-            date: this.date,
-            timeStart: this.timeStart,
-            timeEnd: this.timeEnd,
+          let contractData = {
+            invoiceCounter: this.currentProperty.invoice_counter + 1,
+            propertyName: this.currentProperty.name,
+            user: this.user,
+            // CHANGE CONTRACT
+            contractInfo: {
+              title: this.selectedContract.title,
+              subtitle: this.selectedContract.subtitle,
+              copyright: this.selectedContract.copyright,
+              text: this.selectedContract.text,
+              fieldsArray: this.selectedContract.fields,
+              customFieldsArray: this.selectedContract.custom_fields,
+              logo: this.selectedContract.base64,
+            },
+            clientData: {
+              clientFullName: this.clientFullName,
+              clientPhone: this.clientPhone,
+              clientEmail: this.clientEmail,
+              groomRegion: this.groomRegion,
+              groomPhone: this.groomPhone,
+              groomEmail: this.groomEmail,
+              groomFullName: this.groomFullName,
+              brideFullName: this.brideFullName,
+              brideRegion: this.brideRegion,
+              bridePhone: this.bridePhone,
+              brideEmail: this.brideEmail,
+            },
+            bookingData: {
+              totalCost: this.totalCost,
+              advance: this.advance,
+              notes: this.notes,
+              addedServices: this.addedServices,
+              totalGuests: this.totalGuests,
+              date: this.date,
+              timeStart: this.timeStart,
+              timeEnd: this.timeEnd,
+            }
           }
+          let bookingContract = this.createContract(contractData) // mixin
+          pdfMake.createPdf(bookingContract).download(`sözleşme-${contractFilename}.pdf`)
+          const pdfDocGenerator = pdfMake.createPdf(bookingContract)
+
+          pdfDocGenerator.getBase64((base64) => {
+            this.submitBookingAPI(price, base64)
+          })
+        } else {
+          this.submitBookingAPI(price)
+        }
+      },
+      submitBookingAPI(price, base64 = null) {
+        console.warn('submitBookingAPI')
+        const servicesJson = JSON.stringify(this.addedServices)
+        let formData = new FormData()
+        formData.append('price', price)
+        formData.append('date', this.date)
+        formData.append('type', this.dayPeriod)
+        formData.append('property_id', this.currentProperty.id)
+        formData.append('groom_fullname', this.groomFullName)
+        formData.append('groom_phone', this.groomPhone)
+        formData.append('groom_region', this.groomRegion)
+        formData.append('groom_email', this.groomEmail)
+        formData.append('bride_fullname', this.brideFullName)
+        formData.append('bride_phone', this.bridePhone)
+        formData.append('bride_region', this.brideRegion)
+        formData.append('bride_email', this.brideEmail)
+        formData.append('total_cost', this.totalCost)
+        formData.append('advance', this.advance)
+        formData.append('added_services', servicesJson)
+        formData.append('total_guests', this.totalGuests)
+        formData.append('hour_start', this.timeStart.HH)
+        formData.append('minute_start', this.timeStart.mm)
+        formData.append('hour_end', this.timeEnd.HH)
+        formData.append('minute_end', this.timeEnd.mm)
+        formData.append('notes', this.notes)
+        formData.append('payment_notes', this.paymentNotes)
+        formData.append('client_id', this.clientId)
+        formData.append('user_id', this.user.id)
+        formData.append('booking_discount', this.totalDiscount)
+        formData.append('booking_original_price', this.currentPrice)
+        if (base64) {
+          formData.append('base64', encodeURI(base64))
         }
 
-        let bookingContract = this.createContract(contractData) // mixin
-        pdfMake.createPdf(bookingContract).download(`sözleşme-${contractFilename}.pdf`)
-        const pdfDocGenerator = pdfMake.createPdf(bookingContract)
-        pdfDocGenerator.getBase64((base64) => {
-          const servicesJson = JSON.stringify(this.addedServices)
-          let formData = new FormData()
-          formData.append('price', price)
-          formData.append('date', this.date)
-          formData.append('type', this.dayPeriod)
-          formData.append('property_id', this.currentProperty.id)
-          formData.append('groom_fullname', this.groomFullName)
-          formData.append('groom_phone', this.groomPhone)
-          formData.append('groom_region', this.groomRegion)
-          formData.append('groom_email', this.groomEmail)
-          formData.append('bride_fullname', this.brideFullName)
-          formData.append('bride_phone', this.bridePhone)
-          formData.append('bride_region', this.brideRegion)
-          formData.append('bride_email', this.brideEmail)
-          formData.append('total_cost', this.totalCost)
-          formData.append('advance', this.advance)
-          formData.append('added_services', servicesJson)
-          formData.append('total_guests', this.totalGuests)
-          formData.append('hour_start', this.timeStart.HH)
-          formData.append('minute_start', this.timeStart.mm)
-          formData.append('hour_end', this.timeEnd.HH)
-          formData.append('minute_end', this.timeEnd.mm)
-          formData.append('notes', this.notes)
-          formData.append('payment_notes', this.paymentNotes)
-          formData.append('client_id', this.clientId)
-          formData.append('user_id', this.user.id)
-          formData.append('base64', encodeURI(base64))
-          formData.append('booking_discount', this.totalDiscount)
-          formData.append('booking_original_price', this.currentPrice)
+        if (this.isPreviousReservasion) {
+          formData.append('delete_previous_reservation', 'delete')
+        } else {
+          formData.append('delete_previous_reservation', 'no_delete')
+        }
+        formData.append('reservation_id', this.reservationId)
 
-          if (this.isPreviousReservasion) {
-            formData.append('delete_previous_reservation', 'delete')
-          } else {
-            formData.append('delete_previous_reservation', 'no_delete')
+        let apiUrl = ''
+        if (!this.isEditingExistingBooking) {
+          apiUrl = '/api/booking_add'
+        } else {
+          apiUrl = '/api/booking_update'
+          formData.append('booking_id', this.currentBooking.id)
+        }
+
+        // Send API request
+        this.$http.post(this.appApiPath + apiUrl, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
           }
-          formData.append('reservation_id', this.reservationId)
-
-          let apiUrl = ''
-          if (!this.isEditingExistingBooking) {
-            apiUrl = '/api/booking_add'
-          } else {
-            apiUrl = '/api/booking_update'
-            formData.append('booking_id', this.currentBooking.id)
-          }
-
-          this.$http.post(this.appApiPath + apiUrl, formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
-          }).then(response => {
-            console.log('success response from booking_add')
-            console.log(response.body)
-
-            // Print invoice if property requires it
-            if (this.currentProperty.has_invoice) {
-              try {
-                this.createInvoice(response.body.data.booking)
-              } catch (error) {
-                console.log('error while creating invoice')
-                console.log(error)
-              }
-            } else {
-              // send only contract by email
-              this.sendEmailContractOnly(response.body.data.booking)
-            }
-
-            this.updateBookingLists(response)
-            if (!this.isEditingExistingBooking) {
-              this.initReservations(response.body.data.reservations)
-            }
-            this.resetForm()
-            this.showSpinner = false
-            store.dispatch({
-              type: 'setAppClients',
-              clients: response.body.data.clients
-            })
-            this.$localStorage.set('clients', JSON.stringify(response.body.data.clients))
-
-            store.dispatch({
-              type: 'setAppProperties',
-              properties: response.body.data.properties
-            })
-            this.savePropertiesInStorage(response.body.data.properties, 'admin')
-
-            store.dispatch({
-              type: 'setAppPropertiesManager',
-              propertiesManager: response.body.data.propertiesManager
-            })
-            this.savePropertiesInStorage(response.body.data.propertiesManager, 'manager')
-
-            // Redirect to booking view
-            let bookingViewData = {}
-            for (let i = 0; i < response.body.data.bookingListByDate.length; i++) {
-              let booking = {...response.body.data.bookingListByDate[i]}
-              if (booking.id === response.body.data.booking.id) {
-                bookingViewData = {...booking}
-              }
-            }
-            store.dispatch({
-              type: 'setAppBookingViewData',
-              bookingViewData: bookingViewData
-            })
-            this.$localStorage.set('bookingViewData', JSON.stringify(bookingViewData))
-            router.push({name: 'bookingView', params: {isAlert: true, alertType: 'booking-create-success'}})
-          }, response => {
-            console.log('error from test upload')
-            console.log(response)
-
-            this.showSpinner = false
-            this.resetForm()
-
-            if (this.$language === 'en') {
-              this.$toasted.show('Something went wrong when trying to make the booking', {icon: 'fa-exclamation-triangle', type: 'error'})
-            } else if (this.$language === 'tr') {
-              this.$toasted.show('Rezervasyon yapılırken bir hata oluştu', {icon: 'fa-exclamation-triangle', type: 'error'})
-            }
-          })
+        }).then(response => {
+          this.handleBookingResponse(response)
+        }, response => {
+          this.handleBookingError(response)
         })
+      },
+      handleBookingResponse(response) {
+        console.log('success response from booking_add')
+        console.log(response.body)
+
+        // Print invoice if property requires it
+        if (this.currentProperty.has_invoice) {
+          try {
+            this.createInvoice(response.body.data.booking)
+          } catch (error) {
+            console.log('error while creating invoice')
+            console.log(error)
+          }
+        } else {
+          // send only contract by email
+          this.sendEmailContractOnly(response.body.data.booking)
+        }
+
+        this.updateBookingLists(response)
+        if (!this.isEditingExistingBooking) {
+          this.initReservations(response.body.data.reservations)
+        }
+        this.resetForm()
+        this.showSpinner = false
+        store.dispatch({
+          type: 'setAppClients',
+          clients: response.body.data.clients
+        })
+        this.$localStorage.set('clients', JSON.stringify(response.body.data.clients))
+
+        store.dispatch({
+          type: 'setAppProperties',
+          properties: response.body.data.properties
+        })
+        this.savePropertiesInStorage(response.body.data.properties, 'admin')
+
+        store.dispatch({
+          type: 'setAppPropertiesManager',
+          propertiesManager: response.body.data.propertiesManager
+        })
+        this.savePropertiesInStorage(response.body.data.propertiesManager, 'manager')
+
+        // Redirect to booking view
+        let bookingViewData = {}
+        for (let i = 0; i < response.body.data.bookingListByDate.length; i++) {
+          let booking = {...response.body.data.bookingListByDate[i]}
+          if (booking.id === response.body.data.booking.id) {
+            bookingViewData = {...booking}
+          }
+        }
+        store.dispatch({
+          type: 'setAppBookingViewData',
+          bookingViewData: bookingViewData
+        })
+        this.$localStorage.set('bookingViewData', JSON.stringify(bookingViewData))
+        router.push({name: 'bookingView', params: {isAlert: true, alertType: 'booking-create-success'}})
+      },
+      handleBookingError(response) {
+        console.log('error from test upload')
+        console.log(response)
+
+        this.showSpinner = false
+        this.resetForm()
+
+        if (this.$language === 'en') {
+          this.$toasted.show('Something went wrong when trying to make the booking', {icon: 'fa-exclamation-triangle', type: 'error'})
+        } else if (this.$language === 'tr') {
+          this.$toasted.show('Rezervasyon yapılırken bir hata oluştu', {icon: 'fa-exclamation-triangle', type: 'error'})
+        }
       },
       sendEmailContractOnly(bookingData) {
         var formData = new FormData()
