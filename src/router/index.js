@@ -392,6 +392,11 @@ export default new Router({
           name: 'packageForm',
           component: PackageForm
         },
+        {
+          path: 'userView',
+          name: 'userView',
+          component: UserView,
+        },
       ]
     }
   ]

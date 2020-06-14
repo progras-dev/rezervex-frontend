@@ -28,6 +28,15 @@
             </template>
           </template>
 
+          <template v-slot:cell(actions)="item">
+            <b-button v-if="language === 'en'" variant="outline-success" class="actionButton" @click="goToUserView(item.item, $event)" v-b-tooltip.hover title="Go to User page">
+              <i class="fa fa-search"></i>
+            </b-button>
+            <b-button v-if="language === 'tr'" variant="outline-success" class="actionButton" @click="goToUserView(item.item, $event)" v-b-tooltip.hover title="Kullanıcı sayfasına git">
+              <i class="fa fa-search"></i>
+            </b-button>
+          </template>
+
           <template v-slot:cell(cloak)="item">
             <b-button variant="outline-success" @click="cloak(item.item)">
               <i class="fa fa-user"></i>
@@ -106,6 +115,11 @@
             sortable: true
           },
           {
+            label: 'Actions',
+            class: ['text-center', 'usersTable'],
+            key: 'actions',
+          },
+          {
             label: 'Cloak',
             class: 'text-center',
             key: 'cloak',
@@ -132,6 +146,17 @@
         let indexBegin = (this.currentPage - 1) * this.itemsPerPage
         let indexEnd = indexBegin + this.itemsPerPage
         this.currentItems = this.usersScoped.map(item => ({...item})).slice(indexBegin, indexEnd)
+      },
+      goToUserView(user, event) {
+        console.log(user)
+        event.preventDefault()
+
+        this.$localStorage.set('currentUser', JSON.stringify(user))
+        store.dispatch({
+          type: 'setAppCurrentUser',
+          currentUser: user
+        })
+        router.push({path: '/s/userView'})
       },
       cloak(user) {
         let formData = {
