@@ -720,7 +720,7 @@
                   v-on:vdropzone-success="imageAdded"
                   v-on:vdropzone-removed-file="imageRemoved"
                 ></vue-dropzone>
-                <small class="form-text text-muted"><span v-lang.maxFilesize></span>: 10Mb</small>
+                <small class="form-text text-muted"><span v-lang.maxFilesize></span>: 20Mb</small>
               </div>
             </div>
 
@@ -802,7 +802,7 @@
           destroyDropzone: false,
           headers: { 'My-Awesome-Header': 'header value' },
           acceptedFiles: 'image/jpeg, image/png, image/jpg',
-          maxFilesize: 10,
+          maxFilesize: 20,
         },
         boolean: false,
         months: [
