@@ -604,6 +604,26 @@
               <toggle-button v-if="language == 'en'" class="toggleDayNight" v-model="dayPeriodToggle" :sync="true" @change="changeDayPeriod" :labels="{checked: 'Night', unchecked: 'Day'}" :width="150" :height="40" :color="{checked: '#8398ea', unchecked: '#82C7EB'}"/>
               <toggle-button v-if="language == 'tr'" class="toggleDayNight" v-model="dayPeriodToggle" :sync="true" @change="changeDayPeriod" :labels="{checked: 'Gece', unchecked: 'Gündüz'}" :width="150" :height="40" :color="{checked: '#8398ea', unchecked: '#82C7EB'}"/>
 
+              <b-row>
+                <b-col class="p-0">
+                  <div class="form-group">
+                    <label style="display: block;"><span v-lang.timeStart></span></label>
+                    <div class="input-group">
+                      <span class="input-group-addon mt3"><i class="fa fa-2x fa-clock-o iconColor"></i></span>
+                      <vue-timepicker class="timepickerCustom" v-model="timeStart" style="margin-bottom: 10px"></vue-timepicker>
+                    </div>
+                  </div>
+                </b-col>
+                <b-col class="p-0">
+                  <div class="form-group">
+                    <label style="display: block;"><span v-lang.timeEnd></span></label>
+                    <div class="input-group">
+                      <span class="input-group-addon mt3"><i class="fa fa-2x fa-clock-o iconColor"></i></span>
+                      <vue-timepicker class="timepickerCustom" v-model="timeEnd" style="margin-bottom: 10px"></vue-timepicker>
+                    </div>
+                  </div>
+                </b-col>
+              </b-row>
 
               <div class="form-group" v-if="properties">
                 <label><span v-lang.propertySelect></span></label>
@@ -629,27 +649,6 @@
                   <textarea rows="5" class="form-control lightBorders" v-model.trim="notes" id="bookingNotes" :placeholder="labelNotes"></textarea>
                 </div>
               </div>
-
-              <b-row>
-                <b-col class="p-0">
-                  <div class="form-group">
-                    <label style="display: block;"><span v-lang.timeStart></span></label>
-                    <div class="input-group">
-                      <span class="input-group-addon mt3"><i class="fa fa-2x fa-clock-o iconColor"></i></span>
-                      <vue-timepicker class="timepickerCustom" v-model="timeStart" style="margin-bottom: 10px"></vue-timepicker>
-                    </div>
-                  </div>
-                </b-col>
-                <b-col class="p-0">
-                  <div class="form-group">
-                    <label style="display: block;"><span v-lang.timeEnd></span></label>
-                    <div class="input-group">
-                      <span class="input-group-addon mt3"><i class="fa fa-2x fa-clock-o iconColor"></i></span>
-                      <vue-timepicker class="timepickerCustom" v-model="timeEnd" style="margin-bottom: 10px"></vue-timepicker>
-                    </div>
-                  </div>
-                </b-col>
-              </b-row>
 
               <div class="input-group" style="margin-bottom: 12px" v-if="isDaySelected && !isEditingExistingBooking">
                 <div class="input-group-prepend">
@@ -1595,6 +1594,8 @@
         }
       },
       initContracts() {
+        console.warn('initContracts')
+        console.log(this.contracts)
         this.contractListFormatted = []
 
         // Add option for no contract
@@ -2013,7 +2014,7 @@
           if (this.$language === 'en') {
             this.$toasted.show('You have selected a past date', {icon: 'fa-exclamation-triangle', type: 'error'})
           } else if (this.$language === 'tr') {
-            this.$toasted.show('Geçiş tarih seçtiniz!', {icon: 'fa-exclamation-triangle', type: 'error'})
+            this.$toasted.show('Geçmiş tarih seçtiniz', {icon: 'fa-exclamation-triangle', type: 'error'})
           }
         } else if (isAfterNextYear) {
           if (this.$language === 'en') {
@@ -2083,7 +2084,7 @@
           if (this.$language === 'en') {
             this.$toasted.show('You have selected a past date', {icon: 'fa-exclamation-triangle', type: 'error'})
           } else if (this.$language === 'tr') {
-            this.$toasted.show('Geçiş tarih seçtiniz!', {icon: 'fa-exclamation-triangle', type: 'error'})
+            this.$toasted.show('Geçmiş tarih seçtiniz', {icon: 'fa-exclamation-triangle', type: 'error'})
           }
         } else if (isAfterNextYear) {
           if (this.$language === 'en') {
@@ -2500,6 +2501,7 @@
       },
       createInvoice(bookingData) {
         let today = moment().format('DD-MM-YYYY')
+        const bookingDate = moment(this.date).format('DD-MM-YYYY')
         let invoiceCounter = this.currentProperty.invoice_counter + 1
         let invoice = {
           footer: [
@@ -2570,7 +2572,7 @@
                           ],
                           [
                             {text: ' 120 gün ', decoration: 'underline', alignment: 'center', color: '#444'},
-                            {text: today, decoration: 'underline', alignment: 'center', color: '#444'},
+                            {text: bookingDate, decoration: 'underline', alignment: 'center', color: '#444'},
                             {text: this.totalCost, decoration: 'underline', alignment: 'center', color: '#444'},
                             {text: invoiceCounter, decoration: 'underline', alignment: 'center', color: '#444'}
                           ]

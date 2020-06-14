@@ -24,11 +24,12 @@
             <div class="datepicker-dateRange">
               <span v-for="d in dateRange[pan]" :key="d.date + 'date'" class="day-cell" :class="getItemClasses(d)" :data-date="stringify(d.date)" @click="daySelect(d.date, $event)"><div>
                 <template v-if="d.sclass !== 'datepicker-item-gray'">
-                  {{getSpecailDay(d.date) || d.text}}
+                  {{getSpecialDay(d.date) || d.text}}
                 </template>
                 <template v-else>
                     {{d.text}}
                 </template>
+                <p class="tooltipText" v-if="d.reservationClient">{{ d.reservationClient }}</p>
                 <div v-if="d.sclass !== 'datepicker-item-gray'"><slot :name="stringify(d.date)"></slot></div></div>
               </span>
             </div>
@@ -242,6 +243,9 @@
     computed: {
       text () {
         return this.translations(this.lang)
+      },
+      day() {
+        return this.$refs.day
       }
     },
     methods: {
@@ -583,7 +587,7 @@
         }
         return {year: year, month: month}
       },
-      getSpecailDay (v) {
+      getSpecialDay (v) {
         return this.specialDays[this.stringify(v)]
       },
       stringifyDecadeHeader (date, pan) {
@@ -721,6 +725,19 @@
                 sclass: 'datepicker-item-gray'
               })
             }
+          }
+          
+          // Check reserved days - If reserved add client name to day object
+          for (let i = 0; i < this.dateRange[p].length; i++) {
+            let day = this.dateRange[p][i];
+            for (let z = 0; z < this.daysReserved.length; z++) {
+              const dayReserved = this.daysReserved[z];
+              if (moment(day.date).isSame(moment(dayReserved.date), 'day')) {
+                console.warn('reserved day', dayReserved.date)
+                day.reservationClient = dayReserved.client.full_name
+              }
+            }
+            
           }
         }
       }
@@ -920,6 +937,30 @@
     font-size: 1.4rem;
     color: #666;
   }
+
+
+/* Tooltip text */
+.day-cell .tooltipText {
+  visibility: hidden !important;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+ 
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+  margin-top: -45px;
+  margin-left: -5%;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.day-cell:hover .tooltipText {
+  visibility: visible !important;
+}
+
 
   @media screen and (min-width: 1200px) {
     .event-calendar {
