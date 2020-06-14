@@ -650,7 +650,7 @@
                 </div>
               </div>
 
-              <div class="input-group" style="margin-bottom: 12px" v-if="isDaySelected && !isEditingExistingBooking">
+              <div class="input-group" style="margin-bottom: 12px" v-if="isDaySelected && !isEditingExistingBooking && !isReserved">
                 <div class="input-group-prepend">
                   <div class="input-group-text"> <i class="fa fa-calendar-check-o"></i> </div>
                 </div>
