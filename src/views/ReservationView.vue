@@ -68,9 +68,7 @@
               <div class="progress progress-sm">
                 <div class="progress-bar" :class="{'bg-danger': currentReservation.percentage >= 75, 'bg-warning': currentReservation.percentage >= 50, 'bg-success': currentReservation.percentage < 50}" role="progressbar" style="width: 50%" :style="{ width: currentReservation.percentage + '%' }" :aria-valuenow="currentReservation.percentage" aria-valuemin="0" aria-valuemax="100"></div>
               </div>
-              <div>
-
-              </div>
+              <p class="card-text normalText200 mt20"> <span class="fontWeight300" v-lang.notes></span>: {{ currentReservation.notes }}</p>
             </div>
           </div>
         </div>
