@@ -655,6 +655,8 @@ var translation = {
     brandTitle: 'Brand Title',
     taxOffice: 'Tax Office',
     customFields: 'Custom Fields',
+    companyData: 'Company Data',
+    subscriptionData: 'Subscription Data',
   },
   tr: {
     // General
@@ -1317,6 +1319,8 @@ var translation = {
     brandTitle: 'Brand Title', // Change also in labels
     taxOffice: 'Tax Office', // Change also in labels
     customFields: 'Custom Fields', // Change also in labels
+    companyData: 'Company Data',
+    subscriptionData: 'Subscription Data',
   }
 }
 
