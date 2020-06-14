@@ -5,7 +5,7 @@
 
       <!--PENDING PAYMENTS WIDGET-->
       <div class="col-sm-6 col-md-3">
-        <b-card class="widget text-white" :class="{ 'bg-info': paymentsPending === 0, 'bg-warning': paymentsPending > 0 }">
+        <b-card class="widget text-white" :class="{ 'bg-primary': paymentsPending === 0, 'bg-warning': paymentsPending > 0 }">
           <div class="h1 text-muted text-right mb-4">
             <i class="fa fa-money"></i>
           </div>
@@ -16,7 +16,7 @@
 
       <!--TOTAL RESERVATION WIDGET-->
       <div class="col-sm-6 col-md-3">
-        <b-card class="widget text-white" :class="{ 'bg-info': reservations.length === 0, 'bg-warning': reservations.length > 0 }">
+        <b-card class="widget text-white" :class="{ 'bg-primary': reservations.length === 0, 'bg-warning': reservations.length > 0 }">
           <div class="h1 text-muted text-right mb-4">
             <i class="fa fa-pencil-square-o"></i>
           </div>
