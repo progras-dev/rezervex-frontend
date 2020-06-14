@@ -72,7 +72,7 @@
               </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" v-if="role === 'manager'">
               <label for="inputDeposit"><span v-lang.minimumDeposit></span></label>
               <div class="input-group mb-2">
                 <span class="input-group-addon mt3"><i class="fa fa-2x fa-lira-sign iconColor"></i></span>
@@ -138,6 +138,66 @@
               </div>
             </div>
 
+            <div class="form-group" v-if="user.role === 'admin' && userFormType === 'edit'">
+              <label for="inputTaxOffice"><span v-lang.taxOffice></span></label>
+              <div class="input-group">
+                <span class="input-group-addon mt3"><i class="fa fa-2x fa-id-card iconColor"></i></span>
+                <input class="form-control" :placeholder="labelTaxOffice" id="inputTaxOffice" v-model="user.tax_office">
+              </div>
+            </div>
+
+            <div class="form-group" v-if="user.role === 'admin' && userFormType === 'edit'">
+              <label for="inputName"><span v-lang.documentId></span></label>
+              <div class="input-group">
+                <span class="input-group-addon mt3"><i class="fa fa-2x fa-id-card iconColor"></i></span>
+                <input 
+                  type="number" 
+                  id="documentId" 
+                  class="form-control lightBorders" 
+                  :placeholder="labelDocumentId" 
+                  v-model="documentId"
+                  maxlength="11"
+                  @blur="$v.documentId.$touch()"
+                  oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                  :class="{'is-invalid': (!$v.documentId.required || !$v.documentId.minLength || !$v.documentId.maxLength) && $v.documentId.$error}"
+                />
+              </div>
+              <small class="form-text text-muted"> <span v-lang.requiredForPayment></span>  </small>
+              <div class="invalid-feedback" v-if="!$v.documentId.required && formSubmitted">
+                <span v-lang.documentIdRequired></span>
+              </div>
+              <div class="invalid-feedback" v-if="!$v.documentId.minLength && formSubmitted">
+                <span v-lang.lengthMin11></span>
+              </div>
+              <div class="invalid-feedback" v-if="!$v.documentId.maxLength && formSubmitted">
+                <span v-lang.lengthMax11></span>
+              </div>
+            </div>
+
+            <div class="form-group" v-if="user.role === 'admin' && userFormType === 'edit'">
+              <label for="inputCompanyTitle"><span v-lang.companyTitle></span></label>
+              <div class="input-group">
+                <span class="input-group-addon mt3"><i class="fa fa-2x fa-building iconColor"></i></span>
+                <input class="form-control" :placeholder="labelCompanyTitle" id="inputCompanyTitle" v-model="user.company_title">
+              </div>
+            </div>
+
+            <div class="form-group" v-if="user.role === 'admin' && userFormType === 'edit'">
+              <label for="inputBrandTitle"><span v-lang.brandTitle></span></label>
+              <div class="input-group">
+                <span class="input-group-addon mt3"><i class="fa fa-2x fa-building iconColor"></i></span>
+                <input class="form-control" :placeholder="labelBrandTitle" id="inputBrandTitle" v-model="user.brand_title">
+              </div>
+            </div>
+
+            <div class="form-group" v-if="user.role === 'admin' && userFormType === 'edit'">
+              <label for="inputTaxOffice"><span v-lang.taxOffice></span></label>
+              <div class="input-group">
+                <span class="input-group-addon mt3"><i class="fa fa-2x fa-id-card iconColor"></i></span>
+                <input class="form-control" :placeholder="labelTaxOffice" id="inputTaxOffice" v-model="user.tax_office">
+              </div>
+            </div>
+
 
             <div class="form-group row" style="margin-top: 45px;" v-if="userFormType === 'add'">
               <div class="col-sm-3">
@@ -174,7 +234,7 @@
   import router from '../router/index.js'
   import store from '../vuex/store'
   import Icon from 'vue-awesome/components/Icon'
-  import { required, email } from 'vuelidate/lib/validators'
+  import { required, email, minLength, maxLength } from 'vuelidate/lib/validators'
   import 'vue-awesome/icons/spinner'
   import { labels } from '../mixins/labels'
   import { mask } from 'vue-the-mask'
@@ -196,7 +256,9 @@
         showSpinner: false,
         discount: 3,
         role: '',
-        emailAlreadyInUse: false
+        emailAlreadyInUse: false,
+        formSubmitted: false,
+        documentId: '',
       }
     },
     computed: {
@@ -226,7 +288,11 @@
       userEmail: {
         required, email
       },
-      validationGroup: ['firstName', 'lastName', 'userEmail']
+      documentId: {
+        required,
+        minLength: minLength(11),
+        maxLength: maxLength(11)
+      },
     },
     created () {
       this.$language = this.language
@@ -237,11 +303,13 @@
         this.firstName = this.user.first_name
         this.lastName = this.user.last_name
         this.userEmail = this.user.email
+        this.documentId = this.user.document_id
       }
     },
     methods: {
       createUser(event) {
         event.preventDefault()
+        this.formSubmitted = true
 
         if (this.$v.$invalid || this.emailAlreadyInUse) {
           this.$v.firstName.$touch()
@@ -291,6 +359,7 @@
       },
       updateUser(event) {
         event.preventDefault()
+        this.formSubmitted = true
 
         if (this.$v.$invalid) {
           this.$v.firstName.$touch()
@@ -315,7 +384,11 @@
             'role': this.user.role,
             'minimum_deposit': this.user.minimum_deposit,
             'max_discount': this.user.max_discount,
-            'admin_id': this.admin.id
+            'admin_id': this.admin.id,
+            'document_id': this.documentId,
+            'company_title': this.user.company_title,
+            'brand_title': this.user.brand_title,
+            'tax_office': this.user.tax_office,
           }
 
           this.$http.post(this.appApiPath + '/api/user_update', formData)
