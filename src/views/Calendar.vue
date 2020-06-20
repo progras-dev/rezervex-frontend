@@ -51,7 +51,7 @@
           :show-date="showDate"
           :events="currentEvents"
           locale="tr"
-          class="theme-default holiday-us-traditional holiday-us-official">
+          class="theme-default">
           <calendar-view-header
             slot="header"
             slot-scope="t"
@@ -82,7 +82,6 @@
 <script>
   import { CalendarView, CalendarViewHeader } from "vue-simple-calendar"
 	require("vue-simple-calendar/static/css/default.css")
-  require("vue-simple-calendar/static/css/holidays-us.css")
   
   import store from '../vuex/store'
 

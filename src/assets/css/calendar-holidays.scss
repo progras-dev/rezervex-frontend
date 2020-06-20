@@ -1,0 +1,137 @@
+// 2020 - https://www.timeanddate.com/holidays/turkey/
+// Turkey fllag \01F1F9\01F1F7
+// Mosque \01F54C
+// Ram \01F40F
+
+// Ramadan (mosque emoji)
+.d2020-05-23 .cv-day-number::before {
+	content: "\01F54C";
+}
+.d2020-05-24 .cv-day-number::before {
+	content: "\01F54C";
+}
+.d2020-05-25 .cv-day-number::before {
+	content: "\01F54C";
+}
+.d2020-05-26 .cv-day-number::before {
+	content: "\01F54C";
+}
+
+// Kurban bayram (ram emoji)
+.d2020-07-30 .cv-day-number::before {
+	content: "\01F40F";
+}
+.d2020-07-31 .cv-day-number::before {
+	content: "\01F40F";
+}
+.d2020-08-01 .cv-day-number::before {
+	content: "\01F40F";
+}
+.d2020-08-02 .cv-day-number::before {
+	content: "\01F40F";
+}
+.d2020-08-03 .cv-day-number::before {
+	content: "\01F40F";
+}
+
+
+// 2021
+
+// Ramadan
+.d2021-05-13 .cv-day-number::before {
+	content: "\01F54C";
+}
+.d2021-05-14 .cv-day-number::before {
+	content: "\01F54C";
+}
+.d2021-05-15 .cv-day-number::before {
+	content: "\01F54C";
+}
+.d2021-05-16 .cv-day-number::before {
+	content: "\01F54C";
+}
+
+// Kurban bayram
+.d2021-07-19 .cv-day-number::before {
+	content: "\01F40F";
+}
+.d2021-07-20 .cv-day-number::before {
+	content: "\01F40F";
+}
+.d2021-07-21 .cv-day-number::before {
+	content: "\01F40F";
+}
+.d2021-07-22 .cv-day-number::before {
+	content: "\01F40F";
+}
+.d2021-07-23 .cv-day-number::before {
+	content: "\01F40F";
+}
+
+
+// 2022
+
+// Ramadan
+.d2022-05-03 .cv-day-number::before {
+	content: "\01F54C";
+}
+.d2022-05-04 .cv-day-number::before {
+	content: "\01F54C";
+}
+.d2022-05-05 .cv-day-number::before {
+	content: "\01F54C";
+}
+.d2022-05-06 .cv-day-number::before {
+	content: "\01F54C";
+}
+
+// Kurban bayram
+.d2022-07-09 .cv-day-number::before {
+	content: "\01F40F";
+}
+.d2022-07-10 .cv-day-number::before {
+	content: "\01F40F";
+}
+.d2022-07-11 .cv-day-number::before {
+	content: "\01F40F";
+}
+.d2022-07-12 .cv-day-number::before {
+	content: "\01F40F";
+}
+.d2022-07-13 .cv-day-number::before {
+	content: "\01F40F";
+}
+
+
+// 2023
+
+// Ramadan
+.d2023-04-23 .cv-day-number::before {
+	content: "\01F54C";
+}
+.d2023-04-24 .cv-day-number::before {
+	content: "\01F54C";
+}
+.d2023-04-25 .cv-day-number::before {
+	content: "\01F54C";
+}
+.d2023-04-26 .cv-day-number::before {
+	content: "\01F54C";
+}
+
+// Kurban bayram
+.d2023-06-28 .cv-day-number::before {
+	content: "\01F40F";
+}
+.d2023-06-29 .cv-day-number::before {
+	content: "\01F40F";
+}
+.d2023-06-30 .cv-day-number::before {
+	content: "\01F40F";
+}
+.d2023-07-01 .cv-day-number::before {
+	content: "\01F40F";
+}
+.d2023-07-02 .cv-day-number::before {
+	content: "\01F40F";
+}
