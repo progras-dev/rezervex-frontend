@@ -70,297 +70,244 @@ export default {
       }
     },
     initStoreOnRefresh () {
-      let properties = JSON.parse(this.$localStorage.get('properties', null))
-      // console.log('properties')
-      // console.log(properties)
-      if (properties !== null) {
+      const properties = JSON.parse(this.$localStorage.get('properties', null))
+      if (properties) {
         store.dispatch({
           type: 'setAppProperties',
           properties: properties
         })
       }
 
-      let users = JSON.parse(this.$localStorage.get('users', null))
-      // console.log('users')
-      // console.log(users)
-      if (users !== null) {
+      const users = JSON.parse(this.$localStorage.get('users', null))
+      if (users) {
         store.dispatch({
           type: 'setAppUsers',
           users: users
         })
       }
 
-      let services = JSON.parse(this.$localStorage.get('services', null))
-      // console.log('services')
-      // console.log(services)
-      if (services !== null) {
+      const services = JSON.parse(this.$localStorage.get('services', null))
+      if (services) {
         store.dispatch({
           type: 'setAppServices',
           services: services
         })
       }
 
-      let bookings = JSON.parse(this.$localStorage.get('bookingList', null))
-      // console.log('bookings')
-      // console.log(bookings)
-      if (bookings !== null) {
+      const bookings = JSON.parse(this.$localStorage.get('bookingList', null))
+      if (bookings) {
         store.dispatch({
           type: 'setAppBookings',
           bookings: bookings
         })
       }
 
-      let bookingListIndexed = JSON.parse(this.$localStorage.get('bookingListIndexed', null))
-      // console.log('bookingListIndexed')
-      // console.log(bookingListIndexed)
-      if (bookingListIndexed !== null) {
+      const bookingListIndexed = JSON.parse(this.$localStorage.get('bookingListIndexed', null))
+      if (bookingListIndexed) {
         store.dispatch({
           type: 'setAppBookingListIndexed',
           bookingListIndexed: bookingListIndexed
         })
       }
 
-      let bookingListByDate = JSON.parse(this.$localStorage.get('bookingListByDate', null))
-      // console.log('bookingListByDate')
-      // console.log(bookingListByDate)
-      if (bookingListByDate !== null) {
+      const bookingListByDate = JSON.parse(this.$localStorage.get('bookingListByDate', null))
+      if (bookingListByDate) {
         store.dispatch({
           type: 'setAppBookingListByDate',
           bookingListByDate: bookingListByDate
         })
       }
 
-      let bookingViewData = JSON.parse(this.$localStorage.get('bookingViewData', null))
-      // console.log('bookingViewData')
-      // console.log(bookingViewData)
-      if (bookingViewData !== null) {
+      const bookingViewData = JSON.parse(this.$localStorage.get('bookingViewData', null))
+      if (bookingViewData) {
         store.dispatch({
           type: 'setAppBookingViewData',
           bookingViewData: bookingViewData
         })
       }
 
-      let currentService = JSON.parse(this.$localStorage.get('currentService', null))
-      // console.log('currentService')
-      // console.log(currentService)
-      if (currentService !== null) {
+      const currentService = JSON.parse(this.$localStorage.get('currentService', null))
+      if (currentService) {
         store.dispatch({
           type: 'setAppCurrentService',
           currentService: currentService
         })
       }
 
-      let serviceFormType = this.$localStorage.get('serviceFormType', null)
-      // console.log('serviceFormType')
-      // console.log(serviceFormType)
-      if (serviceFormType !== null) {
+      const serviceFormType = this.$localStorage.get('serviceFormType', null)
+      if (serviceFormType) {
         store.dispatch({
           type: 'setAppServiceFormType',
           serviceFormType: serviceFormType
         })
       }
 
-      let propertyFormType = this.$localStorage.get('propertyFormType', null)
-      // console.log('propertyFormType')
-      // console.log(propertyFormType)
-      if (propertyFormType !== null) {
+      const propertyFormType = this.$localStorage.get('propertyFormType', null)
+      if (propertyFormType) {
         store.dispatch({
           type: 'setAppPropertyFormType',
           propertyFormType: propertyFormType
         })
       }
 
-      let currentProperty = JSON.parse(this.$localStorage.get('currentProperty', null))
-      // console.log('currentProperty')
-      // console.log(currentProperty)
-      if (currentProperty !== null) {
+      const currentProperty = JSON.parse(this.$localStorage.get('currentProperty', null))
+      if (currentProperty) {
         store.dispatch({
           type: 'setAppCurrentProperty',
           currentProperty: currentProperty
         })
       }
 
-      let bookingsForChart = JSON.parse(this.$localStorage.get('bookingsForChart', null))
-      // console.log('bookingsForChart')
-      // console.log(bookingsForChart)
-      if (bookingsForChart !== null) {
+      const bookingsForChart = JSON.parse(this.$localStorage.get('bookingsForChart', null))
+      if (bookingsForChart) {
         store.dispatch({
           type: 'setAppBookingsForChart',
           bookingsForChart: bookingsForChart
         })
       }
 
-      let bookingListWithServices = JSON.parse(this.$localStorage.get('bookingListWithServices', null))
-      // console.log('bookingListWithServices')
-      // console.log(bookingListWithServices)
-      if (bookingListWithServices !== null) {
+      const bookingListWithServices = JSON.parse(this.$localStorage.get('bookingListWithServices', null))
+      if (bookingListWithServices) {
         store.dispatch({
           type: 'setAppBookingListWithServices',
           bookingListWithServices: bookingListWithServices
         })
       }
 
-      let currentBooking = JSON.parse(this.$localStorage.get('currentBooking', null))
-      // console.log('currentBooking')
-      // console.log(currentBooking)
-      if (currentBooking !== null) {
+      const currentBooking = JSON.parse(this.$localStorage.get('currentBooking', null))
+      if (currentBooking) {
         store.dispatch({
           type: 'setAppCurrentBooking',
           currentBooking: currentBooking
         })
       }
 
-      let currentUser = JSON.parse(this.$localStorage.get('currentUser', null))
-      // console.log('currentUser')
-      // console.log(currentUser)
-      if (currentUser !== null) {
+      const currentUser = JSON.parse(this.$localStorage.get('currentUser', null))
+      if (currentUser) {
         store.dispatch({
           type: 'setAppCurrentUser',
           currentUser: currentUser
         })
       }
 
-      let propertiesManager = JSON.parse(this.$localStorage.get('propertiesManager', null))
-      // console.log('propertiesManager')
-      // console.log(propertiesManager)
-      if (propertiesManager !== null) {
+      const propertiesManager = JSON.parse(this.$localStorage.get('propertiesManager', null))
+      if (propertiesManager) {
         store.dispatch({
           type: 'setAppPropertiesManager',
           propertiesManager: propertiesManager
         })
       }
 
-      let userFormType = this.$localStorage.get('userFormType', null)
-      // console.log('userFormType')
-      // console.log(userFormType)
-      if (userFormType !== null) {
+      const userFormType = this.$localStorage.get('userFormType', null)
+      if (userFormType) {
         store.dispatch({
           type: 'setAppUserFormType',
           userFormType: userFormType
         })
       }
 
-      let pricesList = JSON.parse(this.$localStorage.get('pricesList', null))
-      // console.log('pricesList')
-      // console.log(pricesList)
-      if (pricesList !== null) {
+      const pricesList = JSON.parse(this.$localStorage.get('pricesList', null))
+      if (pricesList) {
         store.dispatch({
           type: 'setAppPricesList',
           pricesList: pricesList
         })
       }
 
-      let user = JSON.parse(this.$localStorage.get('user', null))
-      // console.log('user')
-      // console.log(user)
-      if (user !== null) {
+      const user = JSON.parse(this.$localStorage.get('user', null))
+      if (user) {
         store.dispatch({
           type: 'setAppUser',
           user: user
         })
       }
 
-      let clients = JSON.parse(this.$localStorage.get('clients', null))
-      // console.log('clients')
-      // console.log(clients)
-      if (clients !== null) {
+      const clients = JSON.parse(this.$localStorage.get('clients', null))
+      if (clients) {
         store.dispatch({
           type: 'setAppClients',
           clients: clients
         })
       }
 
-      let currentClient = JSON.parse(this.$localStorage.get('currentClient', null))
-      // console.log('currentClient')
-      // console.log(currentClient)
-      if (currentClient !== null) {
+      const currentClient = JSON.parse(this.$localStorage.get('currentClient', null))
+      if (currentClient) {
         store.dispatch({
           type: 'setAppCurrentClient',
           currentClient: currentClient
         })
       }
 
-      let contractFormType = this.$localStorage.get('contractFormType', null)
-      // console.log('contractFormType')
-      // console.log(contractFormType)
-      if (contractFormType !== null) {
+      const contractFormType = this.$localStorage.get('contractFormType', null)
+      if (contractFormType) {
         store.dispatch({
           type: 'setAppContractFormType',
           contractFormType: contractFormType
         })
       }
 
-      let contractFields = JSON.parse(this.$localStorage.get('contractFields', null))
-      // console.log('contractFields')
-      // console.log(contractFields)
-      if (contractFields !== null) {
+      const contractFields = JSON.parse(this.$localStorage.get('contractFields', null))
+      if (contractFields) {
         store.dispatch({
           type: 'setAppContractFields',
           contractFields: contractFields
         })
       }
 
-      let contracts = JSON.parse(this.$localStorage.get('contracts', null))
-      // console.log('contracts')
-      // console.log(contracts)
-      if (contracts !== null) {
+      const contracts = JSON.parse(this.$localStorage.get('contracts', null))
+      if (contracts) {
         store.dispatch({
           type: 'setAppContracts',
           contracts: contracts
         })
       }
 
-      let currentContract = JSON.parse(this.$localStorage.get('currentContract', null))
-      // console.log('currentContract')
-      // console.log(currentContract)
-      if (currentContract !== null) {
+      const currentContract = JSON.parse(this.$localStorage.get('currentContract', null))
+      if (currentContract) {
         store.dispatch({
           type: 'setAppCurrentContract',
           currentContract: currentContract
         })
       }
 
-      let usersSuper = JSON.parse(this.$localStorage.get('usersSuper', null))
-      // console.log('usersSuper from main.js')
-      // console.log(usersSuper)
-      if (usersSuper !== null) {
+      const usersSuper = JSON.parse(this.$localStorage.get('usersSuper', null))
+      if (usersSuper) {
         store.dispatch({
           type: 'setAppUsersSuper',
           usersSuper: usersSuper
         })
       }
 
-      let reservations = JSON.parse(this.$localStorage.get('reservations', null))
-      // console.log('reservations')
-      // console.log(reservations)
-      if (reservations !== null) {
+      const reservations = JSON.parse(this.$localStorage.get('reservations', null))
+      if (reservations) {
         store.dispatch({
           type: 'setAppReservations',
           reservations: reservations
         })
       }
 
-      let notifications = JSON.parse(this.$localStorage.get('notifications', null))
-      // console.log('notifications')
-      // console.log(notifications)
-      if (notifications !== null) {
+      const notifications = JSON.parse(this.$localStorage.get('notifications', null))
+      if (notifications) {
         store.dispatch({
           type: 'setAppNotifications',
           notifications: notifications
         })
       }
 
-      let currentReservation = JSON.parse(this.$localStorage.get('currentReservation', null))
-      // console.log('currentReservation')
-      // console.log(currentReservation)
-      if (currentReservation !== null) {
+      const currentReservation = JSON.parse(this.$localStorage.get('currentReservation', null))
+      if (currentReservation) {
         store.dispatch({
           type: 'setAppCurrentReservation',
           currentReservation: currentReservation
         })
       }
 
-      let counter = JSON.parse(this.$localStorage.get('counter', null))
+      const calendarNotes = JSON.parse(this.$localStorage.get('calendarNotes', null))
+      if (calendarNotes) {
+        store.commit('setCalendarNotes', calendarNotes)
+      }
+
+      const counter = JSON.parse(this.$localStorage.get('counter', null))
       if (counter) {
         store.dispatch({
           type: 'setAppCounter',
@@ -368,7 +315,7 @@ export default {
         })
       }
 
-      let packages = JSON.parse(this.$localStorage.get('packages', null))
+      const packages = JSON.parse(this.$localStorage.get('packages', null))
       if (packages) {
         store.dispatch({
           type: 'setAppPackages',
@@ -376,7 +323,7 @@ export default {
         })
       }
 
-      let plans = JSON.parse(this.$localStorage.get('plans', null))
+      const plans = JSON.parse(this.$localStorage.get('plans', null))
       if (plans) {
         store.dispatch({
           type: 'setAppPlans',
@@ -384,7 +331,7 @@ export default {
         })
       }
 
-      let subscriptionData = JSON.parse(this.$localStorage.get('subscriptionData', null))
+      const subscriptionData = JSON.parse(this.$localStorage.get('subscriptionData', null))
       if (packages) {
         store.dispatch({
           type: 'setAppSubscriptionData',
@@ -393,10 +340,8 @@ export default {
       }
 
       if (this.user.role === 'admin') {
-        let logsList = JSON.parse(this.$localStorage.get('logsList', null))
-        // console.log('logsList')
-        // console.log(logsList)
-        if (logsList !== null) {
+        const logsList = JSON.parse(this.$localStorage.get('logsList', null))
+        if (logsList) {
           store.dispatch({
             type: 'setAppLogsList',
             logsList: logsList

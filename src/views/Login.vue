@@ -349,6 +349,16 @@
             })
             this.$localStorage.set('clients', JSON.stringify(response.body.data.clients))
 
+            let calendarNotes = response.body.data.calendar_notes
+            calendarNotes.map(item => {
+              item.startDate = item.start_date
+              item.isNote = true
+              return item
+            })
+
+            store.commit('setCalendarNotes', calendarNotes)
+            this.$localStorage.set('calendarNotes', JSON.stringify(calendarNotes))
+
             store.dispatch({
               type: 'setAppContracts',
               contracts: response.body.data.contracts
@@ -382,6 +392,7 @@
               plans: response.body.data.plans
             })
             this.$localStorage.set('plans', JSON.stringify(response.body.data.plans))
+            
 
             this.$http.post(this.appApiPath + '/api/user_get_subscription_data', {user_id: userData.id}).then(response => {
               console.log('user_get_subscription_data api success')

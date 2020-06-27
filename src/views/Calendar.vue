@@ -12,68 +12,108 @@
 
     <b-card>
       <div class="row">
-        <div class="col-md-4 col-sm-12">
-          <h3 class="text-success"> <span v-lang.propertySelect></span> </h3>
+        <div class="col-md-3">
+          <div class="row">
+            <div class="col-sm-12">
+              <h3 class="text-success"> <span v-lang.propertySelect></span> </h3>
 
-          <div class="form-group" v-if="properties">
-            <div class="input-group">
-              <span class="input-group-addon mt3"><i class="fa fa-2x fa-building iconColor"></i></span>
-              <b-form-select id="b-form-select" v-model="currentPropertyId" :options="propertiesFormatted" @change="getCurrentBookings">
-              </b-form-select>
+              <div class="form-group" v-if="properties">
+                <div class="input-group">
+                  <span class="input-group-addon mt3"><i class="fa fa-2x fa-building iconColor"></i></span>
+                  <b-form-select id="b-form-select" v-model="currentPropertyId" :options="propertiesFormatted" @change="getCurrentBookings">
+                  </b-form-select>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12 mt-2">
+              <h5 class="text-success"> <span v-lang.colorsInfo></span> </h5>
+              <div>
+                <div class="legendBlock">
+                  <span class="squareToday"></span>
+                  <span class="card-text"><span v-lang.today class="legendText"></span></span>
+                </div>
+                <div class="legendBlock">
+                  <span class="squareNote"></span>
+                  <span class="card-text"><span v-lang.note class="legendText"></span></span>
+                </div>
+                <div class="legendBlock">
+                  <span class="squareDay"></span>
+                  <span class="card-text"><span v-lang.booking class="legendText"></span> <span v-lang.day class="legendText"></span></span>
+                </div>
+                <div class="legendBlock">
+                  <span class="squareNight"></span>
+                  <span class="card-text"><span v-lang.booking class="legendText"></span> <span v-lang.night class="legendText"></span></span>
+                </div>
+                <div class="legendBlock">
+                  <span class="squareReservation"></span>
+                  <span class="card-text"><span v-lang.reservation class="legendText"></span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mt20">
+            <div class="col-sm-12">
+              <h3 class="text-success"> <span v-lang.addNote></span> </h3>
+            </div>
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label for="inputText"><span v-lang.text></span></label>
+                <div class="input-group">
+                  <textarea rows="5" class="form-control lightBorders" v-model.trim="note.title" id="inputText"></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label for="inputStartDate"> <span v-lang.date></span> </label>
+                <div class="input-group">
+                  <b-form-datepicker id="inputStartDate" v-model="note.startDate" locale="tr-TR" label-no-date-selected="Tarih seçilmedi"></b-form-datepicker>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12">
+              <button type="submit" class="btn btn-success btn-lg btn-block white" @click="addNote">
+                <icon name="spinner" class="iconSpinner" pulse v-if="showSpinner"></icon>
+                <i class="fa fa-plus" v-if="!showSpinner"></i>
+                &nbsp;<span v-lang.add></span>
+              </button>
             </div>
           </div>
         </div>
-        <div class="col-md-8 col-sm-12 mt-2">
-          <h5 class="text-success"> <span v-lang.colorsInfo></span> </h5>
-          <div class="legend">
-            <span class="legendBlock">
-              <div class="squareToday"></div>
-              <p class="card-text"><span v-lang.today class="legendText"></span></p>
-            </span>
-            <span class="legendBlock">
-              <div class="squareDay"></div>
-              <p class="card-text"><span v-lang.booking class="legendText"></span> <span v-lang.day class="legendText"></span></p>
-            </span>
-            <span class="legendBlock">
-              <div class="squareNight"></div>
-              <p class="card-text"><span v-lang.booking class="legendText"></span> <span v-lang.night class="legendText"></span></p>
-            </span>
-            <span class="legendBlock">
-              <div class="squareReservation"></div>
-              <p class="card-text"><span v-lang.reservation class="legendText"></span></p>
-            </span>
+        <div class="col-md-9">
+          <div class="calendarWrapper">
+            <calendar-view
+              :show-date="showDate"
+              :events="currentEvents"
+              locale="tr"
+              class="theme-default">
+              <calendar-view-header
+                slot="header"
+                slot-scope="t"
+                :header-props="t.headerProps"
+                @input="setShowDate" />
+              <div slot="event" slot-scope="props"
+                  :class="['cv-event', {'-day': props.event.originalEvent.type === 'day', '-night': props.event.originalEvent.type === 'night', '-reservation': props.event.originalEvent.isReservation, '-note': props.event.originalEvent.isNote }, ...props.event.classes]"
+                  :key="props.event.id"
+                  @click="eventClicked(props.event)">
+                  <div class="event-slot" v-if="props.event.originalEvent.isBooking || props.event.originalEvent.isReservation">   
+                    <p class="mb-1"><i class="fa fa-user-tie iconColor"></i> {{ props.event.originalEvent.client.full_name }}</p>
+                    <p class="mb-1"><i class="fa fa-mobile-alt iconColor"></i> {{ props.event.originalEvent.client.phone }}</p>
+                    <p class="mb-1">
+                      <i class="fa fa-sun faDayNight iconColor" v-if="props.event.originalEvent.type === 'day'"></i> 
+                      <i class="fa fa-moon faDayNight iconColor" v-if="props.event.originalEvent.type === 'night'"></i> 
+                      {{ props.event.originalEvent.hour_start }}:{{ props.event.originalEvent.minute_start }} - {{ props.event.originalEvent.hour_end }}:{{ props.event.originalEvent.minute_end }}
+                    </p>
+                  </div>
+                  <div class="event-slot"  v-if="props.event.originalEvent.isNote">
+                    <p class="mb-1"> {{ props.event.originalEvent.title }}</p>
+                  </div>
+              </div>
+            </calendar-view>
           </div>
         </div>
       </div>
-
-      <div class="calendarWrapper">
-        <calendar-view
-          :show-date="showDate"
-          :events="currentEvents"
-          locale="tr"
-          class="theme-default">
-          <calendar-view-header
-            slot="header"
-            slot-scope="t"
-            :header-props="t.headerProps"
-            @input="setShowDate" />
-          <div slot="event" slot-scope="props"
-              :class="['cv-event', {'-day': props.event.originalEvent.type === 'day', '-night': props.event.originalEvent.type === 'night', '-reservation': props.event.originalEvent.isReservation }, ...props.event.classes]"
-              :key="props.event.id"
-              @click="eventClicked(props.event)">
-              <div class="event-slot">   
-                <p class="mb-1"><i class="fa fa-user-tie iconColor"></i> {{ props.event.originalEvent.client.full_name }}</p>
-                <p class="mb-1"><i class="fa fa-mobile-alt iconColor"></i> {{ props.event.originalEvent.client.phone }}</p>
-                <p class="mb-1">
-                  <i class="fa fa-sun faDayNight iconColor" v-if="props.event.originalEvent.type === 'day'"></i> 
-                  <i class="fa fa-moon faDayNight iconColor" v-if="props.event.originalEvent.type === 'night'"></i> 
-                  {{ props.event.originalEvent.hour_start }}:{{ props.event.originalEvent.minute_start }} - {{ props.event.originalEvent.hour_end }}:{{ props.event.originalEvent.minute_end }}
-                </p>
-              </div>
-          
-          </div>
-        </calendar-view>
-      </div>
+      
     </b-card>
 
   </div>
@@ -95,7 +135,15 @@
         currentProperty: {},
         currentPropertyId: 0,
         currentTimePeriod: 'day',
-        currentEvents: [],
+        note: {
+          title: '',
+          startDate: '',
+          endDate: '',
+        },
+        showSpinner: false,
+        dayBookings: [],
+        nightBookings: [],
+        reservationsFiltered: [],
       }
     },
 
@@ -121,6 +169,12 @@
       clients() {
         return store.state.clients
       },
+      calendarNotes() {
+        return store.state.calendarNotes
+      },
+      currentEvents() {
+        return [...this.dayBookings, ...this.nightBookings, ...this.reservationsFiltered, ...this.calendarNotes]
+      },
       propertiesFormatted() {
         return this.properties.map(item => {
           item.text = item.name
@@ -134,15 +188,32 @@
       this.$language = this.language
       this.initProperties()
       this.getCurrentBookings()
-      console.log('reservations', this.reservations)
-    },
-
-    updated() {
-      console.log('bookings', this.bookings[this.currentPropertyId])
-      console.log('currentEvents', this.currentEvents)
     },
 
     methods: {
+      addNote() {
+        let formData = {
+          'project_id': this.user.project_id,
+          'title': this.note.title,
+          'start_date': this.note.startDate,
+          'end_date': this.note.startDate,
+        }
+
+        this.$http.post(this.appApiPath + '/api/note_add', formData)
+          .then(response => {
+            console.log('note_add response')
+            console.log(response.body)
+            this.note = {}
+            let calendarNotes = response.body.notes
+            calendarNotes.map(item => {
+              item.startDate = item.start_date
+              item.isNote = true
+              return item
+            })
+            store.commit('setCalendarNotes', calendarNotes)
+          })
+          
+      },
       setShowDate(d) {
 				this.showDate = d;
       },
@@ -151,12 +222,8 @@
         this.currentPropertyId = this.currentProperty.id
       },
       getCurrentBookings() {
-        let dayBookings = []
-        let nightBookings = []
-        let reservations = []
-
         if (this.bookings[this.currentPropertyId]) {
-          dayBookings = this.bookings[this.currentPropertyId]['day'].map(booking => {
+          this.dayBookings = this.bookings[this.currentPropertyId]['day'].map(booking => {
             booking.startDate = booking.date
             booking.isBooking = true
             booking.isReservation = false
@@ -164,7 +231,7 @@
             booking.client = this.clients.find(client => client.id === booking.client_id)
             return booking
           })
-          nightBookings = this.bookings[this.currentPropertyId]['night'].map(booking => {
+          this.nightBookings = this.bookings[this.currentPropertyId]['night'].map(booking => {
             booking.startDate = booking.date
             booking.isBooking = true
             booking.isReservation = false
@@ -173,7 +240,7 @@
             return booking
           })
         }
-        reservations = this.reservations
+        this.reservationsFiltered = this.reservations
           .filter(reservation => reservation.property_id === this.currentPropertyId)
           .map(reservation => {
             reservation.startDate = reservation.date
@@ -182,8 +249,6 @@
             reservation.isReservation = true
             return reservation
           })
-        this.currentEvents = [...dayBookings, ...nightBookings, ...reservations]
-        console.log('currentEvents', this.currentEvents)
       },
       toggleDayNight() {
         if (this.currentTimePeriod === 'day') {
@@ -221,6 +286,7 @@
 </script>
 
 <style scoped lang="scss">
+$note: #ffb0b7;
 $today: #FCFF7F;
 $day: #bbf7f5;
 $night: #b0b0fc;
@@ -249,6 +315,10 @@ $reservation: #ffd27a;
   border-color: #ededff;
 }
 
+.cv-event.-note {
+  background-color: $note;
+}
+
 .cv-event.-day {
   background-color: $day;
 }
@@ -267,15 +337,8 @@ $reservation: #ffd27a;
   }
 }
 
-.legend {
-  display: flex;
-  justify-content: space-between;
-}
 
 .legendBlock {
-  display: inline-block;
-  float: left;
-  width: 100%;
   margin-right: 10px;
   margin-bottom: 3px;
 }
@@ -284,36 +347,43 @@ $reservation: #ffd27a;
   font-weight: 300;
   font-size: 0.8rem;
   color: #777;
-  vertical-align: sub;
+  vertical-align: super;
   margin-left: 5px;
 }
 
 .squareToday {
+  display: inline-block;
   width: 30px;
   height: 30px;
   background-color: $today;
-  float: left;
+}
+
+.squareNote {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  background-color: $note;
 }
 
 .squareDay {
+  display: inline-block;
   width: 30px;
   height: 30px;
   background-color: $day;
-  float: left;
 }
 
 .squareNight {
+  display: inline-block;
   width: 30px;
   height: 30px;
   background-color: $night;
-  float: left;
 }
 
 .squareReservation {
+  display: inline-block;
   width: 30px;
   height: 30px;
   background-color: $reservation;
-  float: left;
 }
 
 .faDayNight {

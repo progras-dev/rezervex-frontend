@@ -1,3 +1,5 @@
+import { not } from "vuelidate/lib/validators"
+
 var translation = {
   en: {
     // General
@@ -657,6 +659,8 @@ var translation = {
     customFields: 'Custom Fields',
     companyData: 'Company Data',
     subscriptionData: 'Subscription Data',
+    note: 'Note',
+    addNote: 'Add Note',
   },
   tr: {
     // General
@@ -1321,6 +1325,8 @@ var translation = {
     customFields: 'Custom Fields', // Change also in labels
     companyData: 'Company Data',
     subscriptionData: 'Subscription Data',
+    note: 'Not',
+    addNote: 'Add Note',
   }
 }
 

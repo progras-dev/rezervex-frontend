@@ -802,7 +802,7 @@
   .datepicker-ctrl span,
   .datepicker-body span{
     display: inline-block;
-    width: 58px;
+    // width: 100px;
     /*line-height: 36px;
     height: 36px;*/
     margin-top:5px;
@@ -903,6 +903,7 @@
     background-color: #ddd;
   }
   .datepicker-weekRange span{
+    width: 13%;
     font-weight: bold;
   }
   .datepicker-label{
@@ -938,6 +939,10 @@
     color: #666;
   }
 
+.day-cell {
+  width: 13%;
+}
+
 
 /* Tooltip text */
 .day-cell .tooltipText {
@@ -965,11 +970,11 @@
   @media screen and (min-width: 1200px) {
     .event-calendar {
       .datepicker-inner{
-        width: 440px;
+        // width: 440px;
       }
       .datepicker-body{
         span{
-          width: 60px;
+          // width: 60px;
           /*height: 60px;*/
           vertical-align: top;
         }

@@ -136,9 +136,6 @@
           <div class="row">
 
             <div class="col-md-7 col-sm-12">
-
-              <!--<h3 class="card-text text-success"><span v-lang.dateSelect></span></h3>-->
-
               <calendar ref="wizardOffers"
                         :daysSelected="daysSelected"
                         :daysBusy="daysBusy"
@@ -155,20 +152,19 @@
                         :change-pane="changePaneOffer">
 
                 <div class="event" v-for="(dayPrice, index) in events" :key="index" :slot="dayPrice.date">
-
-                  <!--{{ dayPrice.date }} <br>
-
-                  {{ moment(dayPrice.date).year() }} <br>
-
-                  {{ dayPrice.date.substring(0, 4) }}-->
-
+                  <!-- Note -->
+                  <span class="calendarEventSpan" v-if="calendarNotesForCalendar[dayPrice.date]" style="color: #111">
+                    <template v-for="note in calendarNotesForCalendar[dayPrice.date]">
+                      {{note.title}}
+                    </template>
+                  </span>
+                  <!-- Price -->
                   <span class="calendarEventSpan" v-if="pricesArray[dayPeriod][dayPrice.date]">
                     {{ pricesArray[dayPeriod][dayPrice.date].price | numberFormatNoDecimal }}
                   </span>
                   <span class="calendarEventSpan" v-if="!pricesArray[dayPeriod][dayPrice.date] && defaultPricesData[dayPrice.date.substring(0, 4)][currentMonthSeason]">
                     {{ defaultPricesData[dayPrice.date.substring(0, 4)][currentMonthSeason][dayPeriod][dayPrice.type] | numberFormatNoDecimal }}
                   </span>
-
                 </div>
 
               </calendar>
@@ -385,6 +381,13 @@
                         :change-pane="changePaneBooking">
 
                 <div class="event" v-for="(dayPrice, index) in events" :key="index" :slot="dayPrice.date">
+                  <!-- Note -->
+                  <span class="calendarEventSpan" v-if="calendarNotesForCalendar[dayPrice.date]" style="color: #111">
+                    <template v-for="note in calendarNotesForCalendar[dayPrice.date]">
+                      {{note.title}}
+                    </template>
+                  </span>
+                  <!-- Price -->
                   <span class="calendarEventSpan" v-if="pricesArray[dayPeriod][dayPrice.date]">
                     {{ pricesArray[dayPeriod][dayPrice.date].price | numberFormatNoDecimal }}
                   </span>
@@ -1244,6 +1247,17 @@
       currentBooking() {
         return store.state.currentBooking
       },
+      calendarNotes() {
+        return store.state.calendarNotes
+      },
+      calendarNotesForCalendar() {
+        let notes = []
+        store.state.calendarNotes.forEach(item => {
+          notes[item.start_date] = []
+          notes[item.start_date].push(item)
+        })
+        return notes
+      },
     },
     validations: {
       groomFullName: {
@@ -1285,6 +1299,8 @@
     mounted() {
       // Inside mounted because only now the $refs is ready to be used
       this.routeParamsCheck()
+      console.log('calendarNotes', this.calendarNotes)
+      console.log('calendarNotesForCalendar', this.calendarNotesForCalendar)
     },
     methods: {
       initDates() {
@@ -3448,16 +3464,18 @@
     .datepicker-body{
       .event{
         color: #E56700;
-        margin-top: 18px!important;
+        margin-top: 4px !important;
+        margin-bottom: 12px;
       }
       .low{
         color: red;
         font-weight: bold;
       }
       .calendarEventSpan {
-        height: 30px;
+        // height: 30px;
+        display: block;
         background-color: transparent;
-        margin-top:-6px;
+        // margin-top:-6px;
       }
       .datepicker-monthRange span{
         width: 100px;

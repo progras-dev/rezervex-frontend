@@ -46,6 +46,7 @@ const store = new Vuex.Store({
     planFormType: '',
     counter: {},
     subscriptionData: null,
+    calendarNotes: [],
   },
 
   getters: {
@@ -302,6 +303,9 @@ const store = new Vuex.Store({
     },
     setSubscriptionData: (state, subscriptionData) => {
       state.subscriptionData = subscriptionData
+    },
+    setCalendarNotes: (state, calendarNotes) => {
+      state.calendarNotes = calendarNotes
     },
   },
 
