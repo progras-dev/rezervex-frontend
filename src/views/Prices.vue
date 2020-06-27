@@ -74,6 +74,11 @@
                         :change-pane="changePane">
                 <template v-if="events">
                   <div class="event" v-for="(dayPrice, index) in events" :key="index" :slot="dayPrice.date">
+                    <!-- Note -->
+                    <span class="calendarEventSpan" v-if="calendarNotesForCalendar[dayPrice.date]" style="color: #111">
+                      <template v-for="note in calendarNotesForCalendar[dayPrice.date]">{{note.title}}</template>
+                    </span>
+                    <!-- Price -->
                     <span class="calendarEventSpan" v-if="Object.keys(pricesArray).length === 0">{{ dayPrice.price | numberFormat }}</span>
                     <span class="calendarEventSpan" v-if="Object.keys(pricesArray).length > 0 && pricesArray[dayPeriod][dayPrice.date]">{{ pricesArray[dayPeriod][dayPrice.date].price | numberFormat }}</span>
                     <span class="calendarEventSpan" v-if="Object.keys(pricesArray).length > 0 && !pricesArray[dayPeriod][dayPrice.date] && defaultPricesData[dayPrice.date.substring(0, 4)][currentMonthSeason]">{{ defaultPricesData[dayPrice.date.substring(0, 4)][currentMonthSeason][dayPeriod][dayPrice.type] | numberFormat }}</span>
@@ -236,6 +241,14 @@
         } else if (this.$language === 'tr') {
           return 'Fiyatla'
         }
+      },
+      calendarNotesForCalendar() {
+        let notes = []
+        store.state.calendarNotes.forEach(item => {
+          notes[item.start_date] = []
+          notes[item.start_date].push(item)
+        })
+        return notes
       },
     },
 
@@ -537,9 +550,8 @@
         font-weight: bold;
       }
       .calendarEventSpan {
-        height: 36px;
+        display: block;
         background-color: transparent;
-        margin-top: 6px;
       }
       .datepicker-monthRange span{
         width: 100px;
