@@ -1299,8 +1299,6 @@
     mounted() {
       // Inside mounted because only now the $refs is ready to be used
       this.routeParamsCheck()
-      console.log('calendarNotes', this.calendarNotes)
-      console.log('calendarNotesForCalendar', this.calendarNotesForCalendar)
     },
     methods: {
       initDates() {
@@ -3464,8 +3462,8 @@
     .datepicker-body{
       .event{
         color: #E56700;
-        margin-top: 4px !important;
-        margin-bottom: 12px;
+        // margin-top: 4px !important;
+        // margin-bottom: 6px;
       }
       .low{
         color: red;

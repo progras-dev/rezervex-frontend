@@ -805,7 +805,7 @@
     // width: 100px;
     /*line-height: 36px;
     height: 36px;*/
-    margin-top:5px;
+    // margin-top:5px;
     // border-radius: 4px;
   }
   .datepicker-ctrl p {
@@ -874,7 +874,7 @@
     color: white!important;
   }
   .datepicker-monthRange {
-    margin-top: 10px
+    // margin-top: 10px
   }
   .datepicker-monthRange span,
   .datepicker-ctrl span,
@@ -941,6 +941,9 @@
 
 .day-cell {
   width: 13%;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  padding-top: 4px;
 }
 
 
