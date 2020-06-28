@@ -353,6 +353,7 @@
             calendarNotes.map(item => {
               item.startDate = item.start_date
               item.isNote = true
+              item.title = 'NOT: ' + item.title
               return item
             })
 

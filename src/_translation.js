@@ -1,5 +1,3 @@
-import { not } from "vuelidate/lib/validators"
-
 var translation = {
   en: {
     // General

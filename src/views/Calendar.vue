@@ -92,7 +92,7 @@
                 slot-scope="t"
                 :header-props="t.headerProps"
                 @input="setShowDate" />
-              <div slot="event" slot-scope="props"
+              <!-- <div slot="event" slot-scope="props"
                   :class="['cv-event', {'-day': props.event.originalEvent.type === 'day', '-night': props.event.originalEvent.type === 'night', '-reservation': props.event.originalEvent.isReservation, '-note': props.event.originalEvent.isNote }, ...props.event.classes]"
                   :key="props.event.id"
                   @click="eventClicked(props.event)">
@@ -105,10 +105,10 @@
                       {{ props.event.originalEvent.hour_start }}:{{ props.event.originalEvent.minute_start }} - {{ props.event.originalEvent.hour_end }}:{{ props.event.originalEvent.minute_end }}
                     </p>
                   </div>
-                  <div class="event-slot"  v-if="props.event.originalEvent.isNote">
+                  <div class="event-slot" v-if="props.event.originalEvent.isNote">
                     <p class="mb-1"> {{ props.event.originalEvent.title }}</p>
                   </div>
-              </div>
+              </div> -->
             </calendar-view>
           </div>
         </div>
@@ -208,6 +208,7 @@
             calendarNotes.map(item => {
               item.startDate = item.start_date
               item.isNote = true
+              item.title = 'NOT: ' + item.title
               return item
             })
             store.commit('setCalendarNotes', calendarNotes)
@@ -227,7 +228,7 @@
             booking.startDate = booking.date
             booking.isBooking = true
             booking.isReservation = false
-            booking.title = `${booking.groom_fullname}. \n ${booking.total_guests}`
+            booking.title = `REZERVASYON: ${booking.groom_fullname}. \n ${booking.hour_start} - ${booking.hour_end}`
             booking.client = this.clients.find(client => client.id === booking.client_id)
             return booking
           })
@@ -235,7 +236,7 @@
             booking.startDate = booking.date
             booking.isBooking = true
             booking.isReservation = false
-            booking.title = `${booking.groom_fullname}. \n ${booking.total_guests}`
+            booking.title = `REZERVASYON: ${booking.groom_fullname}. \n ${booking.hour_start} - ${booking.hour_end}`
             booking.client = this.clients.find(client => client.id === booking.client_id)
             return booking
           })
@@ -243,10 +244,12 @@
         this.reservationsFiltered = this.reservations
           .filter(reservation => reservation.property_id === this.currentPropertyId)
           .map(reservation => {
+            console.log({reservation})
             reservation.startDate = reservation.date
             reservation.type = reservation.day_period
             reservation.isBooking = false
             reservation.isReservation = true
+            reservation.title = `OPSYON: ${reservation.client.full_name}. \n ${reservation.day_period}`
             return reservation
           })
       },
@@ -308,11 +311,17 @@ $reservation: #ffd27a;
 .cv-event {
   margin-top: 1.5rem;
   overflow: scroll;
+  white-space: normal;
 }
 .cv-event:hover {
   cursor: pointer;
   background-color: #ededff;
   border-color: #ededff;
+}
+
+.cv-day {
+  overflow: scroll !important;
+  height: 100%;
 }
 
 .cv-event.-note {
