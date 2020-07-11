@@ -659,6 +659,8 @@ var translation = {
     subscriptionData: 'Subscription Data',
     note: 'Note',
     addNote: 'Add Note',
+    goToBookingPage: 'Go to booking',
+    goToReservation: 'Go to reservation',
   },
   tr: {
     // General
@@ -1324,7 +1326,8 @@ var translation = {
     companyData: 'Company Data',
     subscriptionData: 'Subscription Data',
     note: 'Not',
-    addNote: 'Add Note',
+    addNote: 'Not ekle',
+    goToReservation: 'Opsyon sayfasına git',
   }
 }
 

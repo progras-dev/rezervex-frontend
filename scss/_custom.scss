@@ -90,3 +90,16 @@
     }
   }
 }
+
+/* CALENDAR */
+.cv-event:hover {
+  background-color: #ededff;
+  border-color: #ededff;
+  color: black;
+  cursor: pointer;
+}
+
+.cv-event { 
+  white-space: normal !important;
+  max-height: 2.4em !important;
+}

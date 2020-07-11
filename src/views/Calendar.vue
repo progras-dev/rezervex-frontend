@@ -86,12 +86,16 @@
               :show-date="showDate"
               :events="currentEvents"
               locale="tr"
-              class="theme-default">
+              class="theme-default"
+              eventContentHeight="2.5em"
+              @click-event="onClickItem"
+            >
               <calendar-view-header
                 slot="header"
                 slot-scope="t"
                 :header-props="t.headerProps"
-                @input="setShowDate" />
+                @input="setShowDate" 
+              />
               <!-- <div slot="event" slot-scope="props"
                   :class="['cv-event', {'-day': props.event.originalEvent.type === 'day', '-night': props.event.originalEvent.type === 'night', '-reservation': props.event.originalEvent.isReservation, '-note': props.event.originalEvent.isNote }, ...props.event.classes]"
                   :key="props.event.id"
@@ -115,6 +119,47 @@
       </div>
       
     </b-card>
+
+    <b-modal ref="dateItemModal" class="modal-info">
+      <template slot="modal-header">
+        <h5 class="modal-title text-success font-weight-bold">
+          <span v-lang.note v-if="isNote"></span>
+          <span v-lang.booking v-if="isBooking"></span>
+          <span v-lang.reservation v-if="isReservation"></span>
+        </h5>
+        <button type="button"
+            class="close"
+            @click="$refs.dateItemModal.hide()">
+          <span>x</span>
+        </button>
+      </template>
+      <template v-if="isBooking">
+        <p><i class="fa fa-user text-primary"></i> <span v-lang.client style="margin-left: 5px"></span>: {{ booking.client.full_name }}</p>
+        <p><i class="fa fa-clock text-primary"></i> <span v-lang.time style="margin-left: 5px"></span>: {{ bookingTime }} | {{ booking.type }}</p>
+        <p><i class="fa fa-users text-primary"></i> <span v-lang.totalGuests style="margin-left: 5px"></span>: {{ booking.total_guests }}</p>
+        <p><i class="fa fa-money text-primary"></i> <span v-lang.cost style="margin-left: 5px"></span>: {{ booking.total_cost | numberFormat }}</p>
+        <p><i class="fa fa-edit text-primary"></i> <span v-lang.notes style="margin-left: 5px"></span>: {{ booking.notes }}</p>
+      </template>
+      <template v-if="isReservation">
+        <p><i class="fa fa-user text-primary"></i> <span v-lang.client style="margin-left: 5px"></span>: {{ reservation.client.full_name }}</p>
+        <p><i class="fa fa-clock text-primary"></i> <span v-lang.time style="margin-left: 5px"></span>: {{ reservationTime }} | {{reservation.type}}</p>
+        <p><i class="fa fa-edit text-primary"></i> <span v-lang.notes style="margin-left: 5px"></span>: {{ reservation.notes }}</p>
+        <p><i class="fa fa-calendar text-primary"></i> <span v-lang.expirationDate style="margin-left: 5px"></span>: {{ reservation.expirationDateFormatted }}</p>
+      </template>
+      <template v-if="isNote">
+        {{ modalContent }}
+      </template>
+
+      <template slot="modal-footer">
+        &nbsp;
+        <button type="button" class="btn btn-primary white" @click="goToBooking" v-if="isBooking">
+          <span v-lang.goToBookingPage></span>
+        </button>
+        <button type="button" class="btn btn-primary white" @click="goToReservation" v-if="isReservation">
+          <span v-lang.goToReservation></span>
+        </button>
+      </template>
+    </b-modal>
 
   </div>
 </template>
@@ -144,6 +189,14 @@
         dayBookings: [],
         nightBookings: [],
         reservationsFiltered: [],
+        modalContent: '',
+        isBooking: false,
+        isReservation: false,
+        isNote: false,
+        booking: {},
+        bookingTime: '',
+        reservation: {},
+        reservationTime: '',
       }
     },
 
@@ -156,6 +209,9 @@
       },
       user() {
         return store.getters.getUser
+      },
+      users () {
+        return store.state.users
       },
       bookings() {
         return store.state.bookings
@@ -186,11 +242,62 @@
 
     created() {
       this.$language = this.language
+      console.log('users', this.users)
       this.initProperties()
       this.getCurrentBookings()
     },
 
     methods: {
+      goToReservation() {
+        this.$localStorage.set('currentReservation', JSON.stringify(this.reservation))
+        store.dispatch({
+          type: 'setAppCurrentReservation',
+          currentReservation: this.reservation
+        })
+
+        if (this.user.role === 'admin') {
+          this.$router.push({name: 'reservation-o'})
+        } else if (this.user.role === 'manager') {
+          this.$router.push({name: 'reservation-m'})
+        }
+      },
+      goToBooking() {
+        console.log(this.booking)
+        store.dispatch({
+            type: 'setAppBookingViewData',
+            bookingViewData: this.booking
+          })
+          this.$localStorage.set('bookingViewData', JSON.stringify(this.booking))
+          this.$router.push({name: 'bookingView'})
+      },
+      getEventTime(event) {
+        return `${event.hour_start}:${event.minute_start} - ${event.hour_end}:${event.minute_end}`
+      },
+      onClickItem(item, event) {
+        console.warn('onClickItem')
+        console.log({item})
+        console.log({event})
+        this.$refs.dateItemModal.show()
+        if (item.originalEvent.isNote) {
+          this.isNote = true
+          this.isBooking = false
+          this.isReservation = false
+          this.modalContent = item.originalEvent.title.slice(4)
+        } else if (item.originalEvent.isBooking) {
+          this.isNote = false
+          this.isBooking = true
+          this.isReservation = false
+          this.booking = item.originalEvent
+          this.bookingTime = this.getEventTime(this.booking)
+        } else if (item.originalEvent.isReservation) {
+          this.isNote = false
+          this.isBooking = false
+          this.isReservation = true
+          this.reservation = item.originalEvent
+          this.reservationTime = this.getEventTime(this.reservation)
+        }
+        
+      },
       addNote() {
         let formData = {
           'project_id': this.user.project_id,
@@ -228,7 +335,9 @@
             booking.startDate = booking.date
             booking.isBooking = true
             booking.isReservation = false
-            booking.title = `REZERVASYON: ${booking.groom_fullname}. \n ${booking.hour_start} - ${booking.hour_end}`
+            booking.property = this.currentProperty
+            booking.manager = this.users.find(user => user.id === booking.manager_id)
+            booking.title = `REZERVASYON: ${booking.groom_fullname}. \n ${booking.hour_start}:${booking.minute_start}`
             booking.client = this.clients.find(client => client.id === booking.client_id)
             return booking
           })
@@ -236,7 +345,9 @@
             booking.startDate = booking.date
             booking.isBooking = true
             booking.isReservation = false
-            booking.title = `REZERVASYON: ${booking.groom_fullname}. \n ${booking.hour_start} - ${booking.hour_end}`
+            booking.property = this.currentProperty
+            booking.manager = this.users.find(user => user.id === booking.manager_id)
+            booking.title = `REZERVASYON: ${booking.groom_fullname}. \n ${booking.hour_start}:${booking.minute_start}`
             booking.client = this.clients.find(client => client.id === booking.client_id)
             return booking
           })
@@ -249,7 +360,7 @@
             reservation.type = reservation.day_period
             reservation.isBooking = false
             reservation.isReservation = true
-            reservation.title = `OPSYON: ${reservation.client.full_name}. \n ${reservation.day_period}`
+            reservation.title = `OPSYON: ${reservation.client.full_name}. \n ${reservation.hour_start}:${reservation.minute_start}`
             return reservation
           })
       },
@@ -307,21 +418,6 @@ $reservation: #ffd27a;
 }
 .dayNighText {
   font-size: 1.5rem;
-}
-.cv-event {
-  margin-top: 1.5rem;
-  overflow: scroll;
-  white-space: normal;
-}
-.cv-event:hover {
-  cursor: pointer;
-  background-color: #ededff;
-  border-color: #ededff;
-}
-
-.cv-day {
-  overflow: scroll !important;
-  height: 100%;
 }
 
 .cv-event.-note {
@@ -398,6 +494,7 @@ $reservation: #ffd27a;
 .faDayNight {
   font-size: 1.3rem;
 }
+
 
 
 </style>
