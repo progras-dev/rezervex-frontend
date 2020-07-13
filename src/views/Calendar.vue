@@ -151,12 +151,14 @@
       </template>
 
       <template slot="modal-footer">
-        &nbsp;
         <button type="button" class="btn btn-primary white" @click="goToBooking" v-if="isBooking">
           <span v-lang.goToBookingPage></span>
         </button>
         <button type="button" class="btn btn-primary white" @click="goToReservation" v-if="isReservation">
           <span v-lang.goToReservation></span>
+        </button>
+        <button type="button" class="btn btn-danger white" @click="noteRemove" v-if="isNote">
+          <span v-lang.remove></span>
         </button>
       </template>
     </b-modal>
@@ -248,6 +250,28 @@
     },
 
     methods: {
+      noteRemove() {
+        console.log(this.note)
+        this.$http.delete( `${this.appApiPath}/api/notes/${this.note.id}`)
+          .then(response => {
+            console.log('note_add response')
+            console.log(response.body)
+            this.$refs.dateItemModal.hide()
+            this.note = {
+              title: '',
+              startDate: '',
+              endDate: '',
+            }
+            let calendarNotes = response.body.notes
+            calendarNotes.map(item => {
+              item.startDate = item.start_date
+              item.isNote = true
+              item.title = 'NOT: ' + item.title
+              return item
+            })
+            store.commit('setCalendarNotes', calendarNotes)
+          })
+      },
       goToReservation() {
         this.$localStorage.set('currentReservation', JSON.stringify(this.reservation))
         store.dispatch({
@@ -282,6 +306,7 @@
           this.isNote = true
           this.isBooking = false
           this.isReservation = false
+          this.note = item.originalEvent
           this.modalContent = item.originalEvent.title.slice(4)
         } else if (item.originalEvent.isBooking) {
           this.isNote = false
