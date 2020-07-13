@@ -1065,7 +1065,7 @@ var translation = {
     alertGuestBiggerThanServiceRange1: 'Bu servis için belirlenen kişi sayısı aralığında değil.',
     alertGuestBiggerThanServiceRange2: 'Bu yüzden servis hizmet bedeli en yüksek fiyattan hesaplanacak.',
     infoEditContract: 'Bu formu kullanarak, yeni sözleşme ekleyip düzenleyebilirsiniz. Formu doldurduktan sonra butona basınız.',
-    contractEdit: 'Sözleşme düzenle',
+    contractEdit: 'Sözleşmeyi düzenle',
     generateOffers: 'Teklif oluştur',
     offers: 'Teklifler',
     dateSelectInfo: 'Tarih seçim bilgisi',
@@ -1320,15 +1320,15 @@ var translation = {
     userUpdate: 'Kullanıcı Düzenle',
     switchToPlan: 'Planı değiştir',
     currentPlan: 'Mevcut Plan',
-    companyTitle: 'Company Title', // Change also in labels
-    brandTitle: 'Brand Title', // Change also in labels
-    taxOffice: 'Tax Office', // Change also in labels
-    customFields: 'Custom Fields', // Change also in labels
-    companyData: 'Company Data',
-    subscriptionData: 'Subscription Data',
+    companyTitle: 'Şirket Ünvanı', // Change also in labels
+    brandTitle: 'Marka', // Change also in labels
+    taxOffice: 'Vergi Dairesi', // Change also in labels
+    customFields: 'Özel Alanlar', // Change also in labels
+    companyData: 'Şirket Bilgisi',
+    subscriptionData: 'Üyelik Bilgisi',
     note: 'Not',
     addNote: 'Not ekle',
-    goToReservation: 'Opsyon sayfasına git',
+    goToReservation: 'Opsiyon sayfasına git',
     remove: 'Sil',
   }
 }
