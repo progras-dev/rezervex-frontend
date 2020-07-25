@@ -241,6 +241,8 @@
               this.subscriptionCancelled = true
             }
           } else if (response.body.data.level === 'superadmin') {
+            // Cleanup localStorage to remove stuff store there from user account
+            window.localStorage.clear();
             let userData = {}
             userData.authenticated = true
             userData.id = 0
@@ -269,6 +271,18 @@
               packages: response.body.data.packages
             })
             this.$localStorage.set('packages', JSON.stringify(response.body.data.packages))
+
+
+            let calendarNotes = response.body.data.notes
+            calendarNotes.map(item => {
+              item.startDate = item.start_date
+              item.isNote = true
+              item.title = 'NOT: ' + item.title
+              return item
+            })
+
+            store.commit('setCalendarNotes', calendarNotes)
+            this.$localStorage.set('calendarNotes', JSON.stringify(calendarNotes))
 
             this.$router.push({name: 'superadminDashboard'})
           } else {

@@ -59,7 +59,7 @@
               <div class="form-group">
                 <label for="inputText"><span v-lang.text></span></label>
                 <div class="input-group">
-                  <textarea rows="5" class="form-control lightBorders" v-model.trim="note.title" id="inputText"></textarea>
+                  <textarea rows="5" class="form-control lightBorders" v-model.trim="newNote.title" id="inputText"></textarea>
                 </div>
               </div>
             </div>
@@ -67,7 +67,7 @@
               <div class="form-group">
                 <label for="inputStartDate"> <span v-lang.date></span> </label>
                 <div class="input-group">
-                  <b-form-datepicker id="inputStartDate" v-model="note.startDate" locale="tr-TR" label-no-date-selected="Tarih seçilmedi"></b-form-datepicker>
+                  <b-form-datepicker id="inputStartDate" v-model="newNote.startDate" locale="tr-TR" label-no-date-selected="Tarih seçilmedi"></b-form-datepicker>
                 </div>
               </div>
             </div>
@@ -120,7 +120,7 @@
       
     </b-card>
 
-    <b-modal ref="dateItemModal" class="modal-info">
+    <b-modal ref="dateItemModal" class="modal-info" ok-only ok-title="Tamam">
       <template slot="modal-header">
         <h5 class="modal-title text-success font-weight-bold">
           <span v-lang.note v-if="isNote"></span>
@@ -157,8 +157,11 @@
         <button type="button" class="btn btn-primary white" @click="goToReservation" v-if="isReservation">
           <span v-lang.goToReservation></span>
         </button>
-        <button type="button" class="btn btn-danger white" @click="noteRemove" v-if="isNote">
+        <button type="button" class="btn btn-danger white" @click="noteRemove" v-if="showNoteRemoveButton">
           <span v-lang.remove></span>
+        </button>
+        <button type="button" class="btn btn-info white" @click="$refs.dateItemModal.hide()" v-if="isNote && note.is_superadmin !== 'x'">
+          <span v-lang.okay></span>
         </button>
       </template>
     </b-modal>
@@ -183,6 +186,11 @@
         currentPropertyId: 0,
         currentTimePeriod: 'day',
         note: {
+          title: '',
+          startDate: '',
+          endDate: '',
+        },
+        newNote: {
           title: '',
           startDate: '',
           endDate: '',
@@ -240,13 +248,25 @@
           return item
         })
       },
+      isSuperAdmin() {
+        return this.$route.name === 'calendar-s'
+      },
+      showNoteRemoveButton() {
+        if (this.isNote && this.note.is_superadmin !== 'x') {
+          return true
+        } else if (this.isNote && this.note.is_superadmin === 'x' && this.isSuperAdmin) {
+          return true
+        } else {
+          return false
+        }
+      }
     },
 
     created() {
       this.$language = this.language
-      console.log('users', this.users)
       this.initProperties()
       this.getCurrentBookings()
+      console.log('isSuperAdmin', this.isSuperAdmin)
     },
 
     methods: {
@@ -270,6 +290,7 @@
               return item
             })
             store.commit('setCalendarNotes', calendarNotes)
+            this.$localStorage.set('calendarNotes', JSON.stringify(calendarNotes))
           })
       },
       goToReservation() {
@@ -324,18 +345,22 @@
         
       },
       addNote() {
+        let managerType = ''
+        this.isSuperAdmin ? managerType = 'superadmin' : managerType = 'manager'
+        console.log({managerType})
         let formData = {
           'project_id': this.user.project_id,
-          'title': this.note.title,
-          'start_date': this.note.startDate,
-          'end_date': this.note.startDate,
+          'title': this.newNote.title,
+          'start_date': this.newNote.startDate,
+          'end_date': this.newNote.startDate,
+          'manager_type': managerType
         }
 
         this.$http.post(this.appApiPath + '/api/note_add', formData)
           .then(response => {
             console.log('note_add response')
             console.log(response.body)
-            this.note = {}
+            this.newNote = {}
             let calendarNotes = response.body.notes
             calendarNotes.map(item => {
               item.startDate = item.start_date
@@ -344,6 +369,7 @@
               return item
             })
             store.commit('setCalendarNotes', calendarNotes)
+            this.$localStorage.set('calendarNotes', JSON.stringify(calendarNotes))
           })
           
       },

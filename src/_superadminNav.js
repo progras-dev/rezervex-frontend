@@ -18,5 +18,11 @@ export default {
       icon: 'fa fa-box-open',
       order: 3,
     },
+    {
+      name: 'Calendar',
+      url: '/s/calendar',
+      icon: 'fa fa-calendar-alt',
+      order: 4,
+    },
   ]
 }

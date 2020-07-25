@@ -662,6 +662,7 @@ var translation = {
     goToBookingPage: 'Go to booking',
     goToReservation: 'Go to reservation',
     remove: 'Remove',
+    okay: 'Ok',
   },
   tr: {
     // General
@@ -1330,6 +1331,7 @@ var translation = {
     addNote: 'Not ekle',
     goToReservation: 'Opsiyon sayfasına git',
     remove: 'Sil',
+    okay: 'Tamam',
   }
 }
 

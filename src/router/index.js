@@ -397,6 +397,11 @@ export default new Router({
           name: 'userView',
           component: UserView,
         },
+        {
+          path: 'calendar',
+          name: 'calendar-s',
+          component: Calendar
+        },
       ]
     }
   ]
