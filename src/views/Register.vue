@@ -295,14 +295,14 @@
                               <!--//HEAD CONTENT END-->
 
                               <!--PRICE START-->
-                              <div class="generic_price_tag clearfix" v-if="paymentFrequency === 'monthly'">
+                              <div class="generic_price_tag clearfix" v-show="paymentFrequency === 'monthly'">
                                 <span class="price">
                                   <span class="sign"></span>
                                   <span class="currency">{{ plan.monthly_billing | numberFormat }}</span>
                                   <span class="month">/<span v-lang.month></span></span>
                                 </span>
                               </div>
-                              <div class="generic_price_tag clearfix" v-if="paymentFrequency === 'yearly'">
+                              <div class="generic_price_tag clearfix" v-show="paymentFrequency === 'yearly'">
                                 <span class="price">
                                   <span class="sign"></span>
                                   <span class="currency">{{ plan.yearly_billing | numberFormat }}</span>
@@ -612,12 +612,10 @@
           .then(function (response) {
             console.log(response);
             let iyzipayResponseRawArray = response.body.form.split(/[:,]+/)
-            console.log(iyzipayResponseRawArray)
 
            try {
               // find token position - then calculate index for other items
               let tokenIndex = iyzipayResponseRawArray.findIndex(item => item === 'token')
-              console.log({tokenIndex})
               iyziInit.currency = iyzipayResponseRawArray[tokenIndex - 1].slice(1,-1)
               iyziInit.token = iyzipayResponseRawArray[tokenIndex + 1].slice(1,-1)
               iyziInit.price = Number(iyzipayResponseRawArray[tokenIndex + 3])
@@ -625,26 +623,21 @@
 
               // find buyerName position 
               let buyerNameIndex = iyzipayResponseRawArray.findIndex(item => item === 'buyerName')
-              console.log({buyerNameIndex})
               iyziInit.buyerName = iyzipayResponseRawArray[buyerNameIndex + 1].slice(1,-1)
               iyziInit.buyerSurname = iyzipayResponseRawArray[buyerNameIndex + 3].slice(1,-1)
 
               // find gsmNumber position 
               let gsmNumberIndex = iyzipayResponseRawArray.findIndex(item => item === 'gsmNumber')
-              console.log({gsmNumberIndex})
               iyziInit.gsmNumber = iyzipayResponseRawArray[gsmNumberIndex + 1].slice(1,-1)
               iyziInit.email = iyzipayResponseRawArray[gsmNumberIndex + 3].slice(1,-1)
-              console.log({iyziInit})
 
               // find intervalCount position 
               let intervalCountIndex = iyzipayResponseRawArray.findIndex(item => item === 'intervalCount' || item.slice(1,-1) === 'intervalCount')
-              console.log({intervalCountIndex})
               iyziSubscriptionInit.daysOfTrialPeriod = iyzipayResponseRawArray[intervalCountIndex - 1].slice(1,-1)
               iyziSubscriptionInit.intervalCount = iyzipayResponseRawArray[intervalCountIndex + 1].slice(1,-1)
               iyziSubscriptionInit.subscriptionState = iyzipayResponseRawArray[intervalCountIndex + 3].slice(1,-1)
               iyziSubscriptionInit.interval = iyzipayResponseRawArray[intervalCountIndex + 5].slice(1,-1)
               iyziSubscriptionInit.pricingPlanPrice = iyzipayResponseRawArray[intervalCountIndex + 7].split('}}')[0].slice(1,-1)
-              console.log({iyziSubscriptionInit});
 
               iyziInit.createTag();
               setTimeout(() => {
@@ -743,7 +736,6 @@
         } else if (this.paymentFrequency === 'yearly') {
           this.activePlan.pricingReferenceCode = this.activePlan.yearly_reference_code
         }
-        console.log(this.activePlan)
         if (!this.iyzipayFormGenerated) {
           this.showLoadingForm = true
           this.showErrorIyzipay = false
