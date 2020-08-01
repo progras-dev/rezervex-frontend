@@ -39,14 +39,14 @@
                  <span v-lang.subscriptionCancelled></span>
                </div>
                <div class="row">
-                 <div class="col-5">
+                 <div class="col-6" style="padding-right: 0">
                    <button type="button" id="login-button" class="btn btn-primary px-4" @click="loginSubmit">
                      <icon name="spinner" class="iconSpinner" pulse v-if="showSpinner"></icon>
                      <i class="fas fa-sign-in-alt loginIconCustom" v-if="!showSpinner"></i>
                      <span v-lang.signIn class="btnSignIntext"></span>
                    </button>
                  </div>
-                 <div class="col-7 text-right">
+                 <div class="col-6 text-right" style="padding: 0">
                    <button type="button" class="btn btn-link px-0" @click="goToPasswordForgotView">
                      <i class="fa fa-key"></i>
                      <span v-lang.forgetPassword></span>
