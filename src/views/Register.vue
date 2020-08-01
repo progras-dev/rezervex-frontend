@@ -297,14 +297,14 @@
                               <!--PRICE START-->
                               <div class="generic_price_tag clearfix" v-if="paymentFrequency === 'monthly'">
                                 <span class="price">
-                                  <span class="sign">₺</span>
+                                  <span class="sign"></span>
                                   <span class="currency">{{ plan.monthly_billing | numberFormat }}</span>
                                   <span class="month">/<span v-lang.month></span></span>
                                 </span>
                               </div>
                               <div class="generic_price_tag clearfix" v-if="paymentFrequency === 'yearly'">
                                 <span class="price">
-                                  <span class="sign">₺</span>
+                                  <span class="sign"></span>
                                   <span class="currency">{{ plan.yearly_billing | numberFormat }}</span>
                                   <span class="month">/<span v-lang.year></span></span>
                                 </span>
