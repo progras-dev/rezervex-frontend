@@ -21,11 +21,20 @@
               </div>
               <div class="h3 text-success"><span v-lang.plan></span></div>
               <div>
-                <span class="card-text textLine"> <span class="fontWeight300" v-lang.plan></span>: {{ user.plan.name }} </span>
+                <span class="card-text textLine"> 
+                  <span class="fontWeight300" v-lang.plan></span>:
+                  <template v-if="user.plan">{{ user.plan.name }} </template>
+                </span>
                 <span class="card-text textLine"> <span class="fontWeight300" v-lang.frequency></span>: {{ planFrequency }}</span>
                 <span class="card-text textLine"> <span class="fontWeight300" v-lang.price></span>: {{ planPrice | numberFormat }} </span>
-                <span class="card-text textLine"> <span class="fontWeight300" v-lang.maxUsers></span>: {{ user.plan.max_users }} </span>
-                <span class="card-text textLine"> <span class="fontWeight300" v-lang.maxProperties></span>: {{ user.plan.max_properties }} </span>
+                <span class="card-text textLine"> 
+                  <span class="fontWeight300" v-lang.maxUsers></span>: 
+                  <template v-if="user.plan">{{ user.plan.max_users }} </template>
+                </span>
+                <span class="card-text textLine"> 
+                  <span class="fontWeight300" v-lang.maxProperties></span>:
+                  <template v-if="user.plan">{{ user.plan.max_properties }} </template>
+                </span>
                 <span class="card-text textLine"> <span class="fontWeight300" v-lang.subscriptionDate></span>: {{ planSubsciptionDate }} </span>
                 <span class="card-text textLine"> <span class="fontWeight300" v-lang.nextPayment></span>: {{ planNextPayment }} </span>
               </div>
@@ -364,8 +373,14 @@
         <h5 class="modal-title"><span v-lang.changePaymentFrequency></span></h5>
       </template>
 
-      <p> <span class="fontWeight300" v-lang.monthlyPricing></span>:  {{ user.plan.monthly_billing | numberFormat }}</p>
-      <p> <span class="fontWeight300" v-lang.yearlyPricing></span>:  {{ user.plan.yearly_billing | numberFormat }}</p>
+      <p> 
+        <span class="fontWeight300" v-lang.monthlyPricing></span>:
+        <template v-if="user.plan">{{ user.plan.monthly_billing | numberFormat }}</template>
+      </p>
+      <p> 
+        <span class="fontWeight300" v-lang.yearlyPricing></span>:  
+        <template v-if="user.plan">{{ user.plan.yearly_billing | numberFormat }}</template>
+      </p>
       <p> <span class="fontWeight300" v-lang.currentPaymentFrequency></span>:  {{ planFrequency }}</p>
 
       <template v-if="user.payment_frequency === 'monthly'">
@@ -408,12 +423,14 @@
                 <li><span><i class="fa fa-envelope mr-1"></i> </span>{{ plan.total_emails }} <span v-lang.emailsIncluded></span></li>
                 <li><span><i class="fa fa-calendar mr-1"></i> </span>{{ plan.days_free_trial }} <span v-lang.totalDaysFreeTrial></span></li>
               </ul>
-              <button class="btn btn-success white mt-1" @click="selectPlan(plan)" v-if="plan.id !== user.plan.id">
-                <icon name="spinner" class="iconSpinner" pulse v-if="showSpinnerChangePlan"></icon>
-                <i class="fa fa-exchange-alt" v-if="!showSpinnerChangePlan"></i>
-                <span v-lang.switchToPlan></span>
-              </button>
-              <h3 class="text-success" v-if="plan.id === user.plan.id"> <span v-lang.currentPlan></span> </h3>
+              <template v-if="user.plan">
+                <button class="btn btn-success white mt-1" @click="selectPlan(plan)" v-if="plan.id !== user.plan.id">
+                  <icon name="spinner" class="iconSpinner" pulse v-if="showSpinnerChangePlan"></icon>
+                  <i class="fa fa-exchange-alt" v-if="!showSpinnerChangePlan"></i>
+                  <span v-lang.switchToPlan></span>
+                </button>
+                <h3 class="text-success" v-if="plan.id === user.plan.id"> <span v-lang.currentPlan></span> </h3>
+              </template>
             </div>
           </div>
         </div>
@@ -501,28 +518,32 @@
         return store.state.subscriptionData
       },
       payments() {
-        const orders = this.subscriptionData.orders.map(item => {
-          let status = ''
-          if (item.orderStatus === 'SUCCESS') {
-            if (this.language === 'tr') {
-              status = 'Başarı'
-            } else if (this.language === 'en') {
-              status = 'Success'
+        let orders = []
+
+        if (this.subscriptionData.orders) {
+          orders = this.subscriptionData.orders.map(item => {
+            let status = ''
+            if (item.orderStatus === 'SUCCESS') {
+              if (this.language === 'tr') {
+                status = 'Başarı'
+              } else if (this.language === 'en') {
+                status = 'Success'
+              }
+            } else if (item.orderStatus === 'WAITING') {
+              if (this.language === 'tr') {
+                status = 'Bekleme'
+              } else if (this.language === 'en') {
+                status = 'Waiting'
+              }
             }
-          } else if (item.orderStatus === 'WAITING') {
-            if (this.language === 'tr') {
-              status = 'Bekleme'
-            } else if (this.language === 'en') {
-              status = 'Waiting'
+            return {
+              price: item.price,
+              startPeriod: moment(item.startPeriod).lang('tr').format('DD  MMM  YYYY'),
+              endPeriod: moment(item.endPeriod).lang('tr').format('DD  MMM  YYYY'),
+              status: status,
             }
-          }
-          return {
-            price: item.price,
-            startPeriod: moment(item.startPeriod).lang('tr').format('DD  MMM  YYYY'),
-            endPeriod: moment(item.endPeriod).lang('tr').format('DD  MMM  YYYY'),
-            status: status,
-          }
-        })
+          })
+        }
         return orders
       },
       smsPackageColumn() {
@@ -569,18 +590,30 @@
         }
       },
       planPrice() {
-        if (this.user.payment_frequency === 'yearly') {
-          return this.user.plan.yearly_billing
-        } else if (this.user.payment_frequency === 'monthly') {
-          return this.user.plan.monthly_billing
+        if (this.user.plan) {
+          if (this.user.payment_frequency === 'yearly') {
+            return this.user.plan.yearly_billing
+          } else if (this.user.payment_frequency === 'monthly') {
+            return this.user.plan.monthly_billing
+          }
+        } else {
+          return ''
         }
       },
       planSubsciptionDate() {
-        return moment(this.subscriptionData.createdDate).lang('tr').format('DD  MMM  YYYY')
+        if (this.subscriptionData.createdDate) {
+          return moment(this.subscriptionData.createdDate).lang('tr').format('DD  MMM  YYYY')
+        } else {
+          return ''
+        }
       },
       planNextPayment() {
-        let dateRaw = this.subscriptionData.orders.find(item => item.orderStatus === 'WAITING').startPeriod
-        return moment(dateRaw).lang('tr').format('DD  MMM  YYYY')
+        if (this.subscriptionData.orders) {
+          let dateRaw = this.subscriptionData.orders.find(item => item.orderStatus === 'WAITING').startPeriod
+          return moment(dateRaw).lang('tr').format('DD  MMM  YYYY')
+        } else {
+          return ''
+        }
       },
     },
     created () {
