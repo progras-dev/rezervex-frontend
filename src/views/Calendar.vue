@@ -14,7 +14,7 @@
       <div class="row">
         <div class="col-md-3">
           <div class="row">
-            <div class="col-sm-12">
+            <div class="col-sm-12" v-if="!isSuperAdmin">
               <h3 class="text-success"> <span v-lang.propertySelect></span> </h3>
 
               <div class="form-group" v-if="properties">
