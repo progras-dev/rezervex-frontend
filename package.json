@@ -41,7 +41,7 @@
     "vue-multiselect": "2.0.6",
     "vue-notifications": "0.9.0",
     "vue-quill-editor": "2.3.3",
-    "vue-resource": "^1.5.1",
+    "vue-resource": "^1.5.3",
     "vue-router": "3.0.1",
     "vue-select": "^3.10.3",
     "vue-simple-calendar": "^4.4.0",
